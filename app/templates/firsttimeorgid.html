@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} Meraki Guest Portal Self-Provisioning - First Time Setup{% endblock %}
+
+{% block content %}
+
+	<h1>First Time Setup - Organisation ID</h1>
+
+	<div id='ListResults'>
+	<table class="table">
+	<tr><th scope="col">Param</th><th scope="col">Other</th></tr>
+	{% for orgid in merakiorgids %}
+		<tr><th scope="row">{{ orgid['param'] }}</th><td>{{ orgid['other'] }}</td></tr>
+	{% endfor %}
+	</table>
+	</div>
+
+	<div id='FirstTimeForm'>
+	<form id="MerakiAPIKeyForm" method="post">
+		<div class="form-group">
+			<label for="MerakiOrgID">Meraki Org ID</label>
+			<input type="text" name="MerakiOrgID" class="form-control" value="{{ request.form['MerakiOrgID'] }}"></input>
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</div>
+	</form>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base-admin.html' %}
+
+{% block title %} Meraki Guest Portal Self-Provisioning {% endblock %}
+
+{% block content %}
+
+	<h1>List of Current Wifi Networks in use</h1>
+
+	<form method="post">
+	<div class="form-group"><button type="submit" class="btn btn-primary">Refresh DB</button></div>
+	</form>	
+
+	<table class="table">
+	<thead>
+	<tr><th scope="col">Number</th><th scope="col">Name</th><th scope="col">Enabled</th><th scope="col">Auth Mode</th><th scope="col">IP Assignment Mode</th><th scope="col">Vlan Tagging?</th><th scope="col">Splash Page?</th><th scope="col">Splash URI</th><th scope="col">Splash Timeout</th><th scope="col">Walled Garden?</th><th scope="col">Client Upload</th><th scope="col">Client Download</th></tr>
+	</thead>
+	<tbody>
+
+	{% for ssid in ssids %}
+		<tr><th scope="row">{{ ssid['number'] }}</th><td>{{ ssid['name'] }}</td><td>{{ ssid['enabled'] }}</td><td>{{ ssid['authMode'] }}</td><td>{{ ssid['ipAssignmentMode'] }}</td><td>{{ ssid['useVlanTagging'] }}</td><td>{{ ssid['splashPage'] }}</td><td>{{ ssid['adminSplashUrl'] }}</td><td>{{ ssid['splashTimeout'] }}</td><td>{{ ssid['walledGardenEnabled'] }}</td><td>{{ ssid['perClientBandwidthLimitUp'] }}</td><td>{{ ssid ['perClientBandwidthLimitDown'] }}</td></tr>
+	{% endfor %}
+
+	</tbody>
+	</table>
+
+{% endblock %}
