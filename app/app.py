@@ -81,7 +81,7 @@ def index():
         'SELECT 1 FROM globalparams WHERE name=? LIMIT 1', ["MerakiAPIKey"])
     keyexists = keycheck.fetchone()
     print(keyexists)
-    # (NEED TO CHECK FOR ORGID AND NETWORKID TOO)
+    # (NEED TO CHECK FOR ORGID AND NETWORKID TOO!!! then redirect to relevant page)
     if keyexists == None:
         return redirect(url_for('firsttime'))
     else:
