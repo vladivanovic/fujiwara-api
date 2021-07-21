@@ -1,10 +1,17 @@
-{% extends 'base-admin.html' %}
+{% extends 'base.html' %}
 
 {% block title %} Meraki Guest Portal Self-Provisioning {% endblock %}
 
 {% block content %}
 
-	<h1>Welcome to Vlad's Meraki Guest Portal Provisioner</h1>
-	<p>Use the menu above to navigate between the different options</p>
+	<h1>Welcome to Fujiwara-API</h1>
+	<p>The awesome HUD to see all your Meraki Network status in one</p>
+	
+	<div id='ListResults'>
+	<table class="table">
+	<tr><th scope="col">nGrok Tunnel Details</th></tr>
+	<tr><th scope="row">{{ ngrok_tunnel }}</th></tr>
+	</table>
+	</div>
 
 {% endblock %}

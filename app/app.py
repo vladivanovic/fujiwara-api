@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 import os
 import meraki
 import cv2
+from pyngrok import ngrok
 
 # Establish Database Connection
 def get_db_connection():
@@ -62,6 +63,10 @@ networkidexists = networkidcheck.fetchone()
 if not networkidexists == None:
         NetworkID = networkidexists['param']
 conn.close()
+
+# Kickstart nGrok instance for Meraki Webhook
+# Creates tunnel from nGrok on Port 80 (e.g. http://localhost:80/)
+http_tunnel = ngrok.connect()
 
 # Kickstart Flask App
 app = Flask(__name__)
@@ -183,8 +188,13 @@ def firsttimenetworkid():
 # Create an Admin Page
 @app.route('/admin', methods=('GET', 'POST'))
 def admin():
+	ngrok_tunnel = ngrok.get_tunnels()
     return render_template('admin.html')
 
-
+# Create Webhook Listener
+@app.route('/listen', methods=('POST'))
+def listen():
+	print(request.json);
+	return Response(status=200);
 
 
