@@ -17,17 +17,20 @@ What this project gives you:
 	c. Advanced details using SNMP
 3. A HUD to see events related to your sensors + cameras, we take snapshots when a sensor triggers
 
-# to-do-list
+## to-do-list
+
+1. Need to fix a few bits of existing app.py code (the section to check for partial first time setup)
+2. Check if Automated Webhook + nGrok setup works fine (check if we can automate which webhook for Meraki to talk too via API)
+3. Test APIs for WAN links, Device Status
+4. Find Python SNMP Module, install it and add to automated installer
+5. Build out ability for Python SNMP Module, pulling data and temp storing in SQLite3 DB
+6. To support the Sensor API w/ MV camera feature - need to build out a DB to create a mapping between system and camera?? or see if there is device location in the API then we can say any sensor in area X triggers a snapshot on one or multiple cameras in the same area (although differentiating between say what is in a DC and what is outside of a DC is hard so...)
+7. Get Beta MT sensor API, test with MV sensor Snapshot API
+
+## testing needed
 
 1. Update automated installer to check for and account if system is CentOS or Ubuntu and adjust
-2. Need to fix a few bits of existing app.py code (the section to check for partial first time setup)
-3. Check if Automated Webhook + nGrok setup works fine (check if we can automate which webhook for Meraki to talk too via API)
-4. Test APIs for WAN links, Device Status
-5. Find Python SNMP Module, install it and add to automated installer
-6. Build out ability for Python SNMP Module, pulling data and temp storing in SQLite3 DB
-7. To support the Sensor API w/ MV camera feature - need to build out a DB to create a mapping between system and camera?? or see if there is device location in the API then we can say any sensor in area X triggers a snapshot on one or multiple cameras in the same area (although differentiating between say what is in a DC and what is outside of a DC is hard so...)
-8. Get Beta MT sensor API, test with MV sensor Snapshot API
 
-# random idea list
+## random idea list
 
 Something to be added here one day
