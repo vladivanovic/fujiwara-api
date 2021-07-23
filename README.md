@@ -26,7 +26,8 @@ What this project gives you:
 4. Test APIs for WAN links, Device Status
 5. Find Python SNMP Module, install it and add to automated installer
 6. Build out ability for Python SNMP Module, pulling data and temp storing in SQLite3 DB
-7. Get Beta MT sensor API, test with MV sensor Snapshot API
+7. To support the Sensor API w/ MV camera feature - need to build out a DB to create a mapping between system and camera?? or see if there is device location in the API then we can say any sensor in area X triggers a snapshot on one or multiple cameras in the same area (although differentiating between say what is in a DC and what is outside of a DC is hard so...)
+8. Get Beta MT sensor API, test with MV sensor Snapshot API
 
 # random idea list
 
