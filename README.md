@@ -7,8 +7,7 @@ This project is built on the latest (July 2021) versions of the following:
 - Flask
 - SQLite3
 - Meraki Dashboard APIs
-- Bootstrap
-- JavaScript
+- ngrok (sign up for free to get an AuthToken at ngrok.com)
 
 What this project gives you:
 1. Automated install of all requirements for this Project (on Ubuntu or CentOS)
@@ -20,7 +19,7 @@ What this project gives you:
 
 # to-do-list
 
-1. ~~Update automated installer to check for and account if system is CentOS or Ubuntu and adjust~~
+1. Update automated installer to check for and account if system is CentOS or Ubuntu and adjust
 2. Need to fix a few bits of existing app.py code (the section to check for partial first time setup)
 3. Check if Automated Webhook + nGrok setup works fine (check if we can automate which webhook for Meraki to talk too via API)
 4. Test APIs for WAN links, Device Status
