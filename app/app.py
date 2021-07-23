@@ -84,6 +84,10 @@ def index():
     # (NEED TO CHECK FOR ORGID AND NETWORKID TOO!!! then redirect to relevant page)
     if keyexists == None:
         return redirect(url_for('firsttime'))
+    elif orgidexists == None:
+        return redirect(url_for('firsttimeorgid'))
+    elif networkidexists == None:
+        return redirect(url_for('firsttimenetworkid'))
     else:
         return render_template('index.html')
 
@@ -188,13 +192,13 @@ def firsttimenetworkid():
 # Create an Admin Page
 @app.route('/admin', methods=('GET', 'POST'))
 def admin():
-	ngrok_tunnel = ngrok.get_tunnels()
+    ngrok_tunnel = ngrok.get_tunnels()
     return render_template('admin.html')
 
 # Create Webhook Listener
 @app.route('/listen', methods=('POST'))
 def listen():
-	print(request.json);
-	return Response(status=200);
+    print(request.json)
+    return Response(status=200)
 
 

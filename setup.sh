@@ -11,13 +11,16 @@ if [ $ID == "ubuntu" ]; then
 	sudo apt-get install python3 python3-pip -y
 	sudo snap install ngrok
 	pip3 install meraki flask pyngrok
-	read -p "Enter your nGrok Token: " ngroktoken
+	read -p "Enter your ngrok Token: " ngroktoken
 	ngrok authtoken $ngroktoken
 elif [ $ID == "centos" ]; then
 	sudo yum update
 	sudo yum upgrade
+	# NEED TO VERIFY THIS PART
 	sudo yum install python3 python3-pip ngrok-client
 	pip3 install meraki flask pyngrok
+	read -p "Enter your ngrok Token: " ngroktoken
+	ngrok authtoken $ngroktoken
 else
 	echo $ID
 	echo "Cannot detect compatible OS"
