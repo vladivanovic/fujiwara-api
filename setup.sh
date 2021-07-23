@@ -8,8 +8,11 @@ source /etc/os-release
 if [ $ID == "ubuntu" ]; then
 	sudo apt-get update
 	sudo apt-get upgrade
-	sudo apt-get install python3 python3-pip ngrok-client -y
+	sudo apt-get install python3 python3-pip -y
+	sudo snap install ngrok
 	pip3 install meraki flask pyngrok
+	read -p "Enter your nGrok Token: " ngroktoken
+	ngrok authtoken $ngroktoken
 elif [ $ID == "centos" ]; then
 	sudo yum update
 	sudo yum upgrade
