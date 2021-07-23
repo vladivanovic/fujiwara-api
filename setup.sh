@@ -1,15 +1,22 @@
+#!/bin/bash
+# OS Detection + Installation of required base modules
 
-# Install Python3 and Pip3
+# load /etc/os-release
+source /etc/os-release
 
-apt-get update
-apt-get install python3 python3-pip ngrok
-
-# Install Meraki Dashboard API Python Library from pip
-
-pip3 install meraki Flask pyngrok
-
-# Commit Meraki API Key to OS Environ
-
-## export MERAKI_API_KEY=''
-
+# find the OS and install
+if [ $ID == "ubuntu" ]; then
+	sudo apt-get update
+	sudo apt-get upgrade
+	sudo apt-get install python3 python3-pip ngrok-client -y
+	pip3 install meraki flask pyngrok
+elif [ $ID == "centos" ]; then
+	sudo yum update
+	sudo yum upgrade
+	sudo yum install python3 python3-pip ngrok-client
+	pip3 install meraki flask pyngrok
+else
+	echo $ID
+	echo "Cannot detect compatible OS"
+fi
 
