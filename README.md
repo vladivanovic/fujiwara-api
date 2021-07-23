@@ -19,7 +19,7 @@ What this project gives you:
 
 ## to-do-list
 
-1. Need to fix a few bits of existing app.py code (the section to check for partial first time setup)
+1. Add the init_db.py to the setup script to create an SQLite3 DB for us, then we need a run.sh to start the Flask instance of the app
 2. Check if Automated Webhook + nGrok setup works fine (check if we can automate which webhook for Meraki to talk too via API)
 3. Test APIs for WAN links, Device Status
 4. Find Python SNMP Module, install it and add to automated installer
@@ -29,7 +29,8 @@ What this project gives you:
 
 ## testing needed
 
-1. Update automated installer to check for and account if system is CentOS or Ubuntu and adjust
+1. Update automated installer to check for and account if system is CentOS or Ubuntu and adjust (need to test CentOS)
+2. Need to fix a few bits of existing app.py code - the section to check for partial first time setup (need to test this firsttime setup breaking)
 
 ## random idea list
 
