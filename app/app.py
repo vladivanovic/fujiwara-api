@@ -4,7 +4,6 @@ import sqlite3
 from werkzeug.exceptions import abort
 import os
 import meraki
-import cv2
 from pyngrok import ngrok
 
 # Establish Database Connection
@@ -33,12 +32,12 @@ keycheck = cur.execute(
        'SELECT * FROM globalparams WHERE name=? LIMIT 1', ["MerakiAPIKey"])
 keyexists = keycheck.fetchone()
 if not keyexists == None:
-        MERAKI_API_KEY = keyexists['param']
+    MERAKI_API_KEY = keyexists['param']
 conn.close()
 
 # Establish Global dashboard Variable to access Meraki API
 global dashboard
-dashboard = meraki.DashboardAPI(MERAKI_API_KEY);
+dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
 
 # Establish Meraki Org ID
 global OrgID
@@ -49,7 +48,7 @@ orgidcheck = cur.execute(
         'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiOrgID","1"])
 orgidexists = orgidcheck.fetchone()
 if not orgidexists == None:
-	OrgID = orgidexists['param']
+    OrgID = orgidexists['param']
 conn.close()
 
 # Establish Network ID
@@ -61,7 +60,7 @@ networkidcheck = cur.execute(
         'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiNetworkID","1"])
 networkidexists = networkidcheck.fetchone()
 if not networkidexists == None:
-        NetworkID = networkidexists['param']
+    NetworkID = networkidexists['param']
 conn.close()
 
 # Kickstart nGrok instance for Meraki Webhook
