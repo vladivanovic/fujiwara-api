@@ -1,71 +1,8 @@
 # All of the Imports
 from flask import Flask, render_template, request, url_for, flash, redirect, Response
-import sqlite3
 from werkzeug.exceptions import abort
-import os
-import meraki
 from pyngrok import ngrok
-
-# Establish Database Connection
-def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row
-    return conn
-
-# Establish First Time Setup DB Setup
-if os.path.exists('database.db'):
-    print("File Exists")
-else:
-    # Do initial DB File and Table setup
-    conn = get_db_connection()
-    with open('schema.sql') as schema:
-        conn.executescript(schema.read())
-    conn.commit()
-    conn.close()
-
-# Establish Meraki API Key
-global MERAKI_API_KEY
-MERAKI_API_KEY = ''
-conn = get_db_connection()
-cur = conn.cursor()
-keycheck = cur.execute(
-       'SELECT * FROM globalparams WHERE name=? LIMIT 1', ["MerakiAPIKey"])
-keyexists = keycheck.fetchone()
-if not keyexists == None:
-    MERAKI_API_KEY = keyexists['param']
-conn.close()
-
-# Establish Global dashboard Variable to access Meraki API
-global dashboard
-dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
-
-# Establish Meraki Org ID
-global OrgID
-OrgID = ''
-conn = get_db_connection()
-cur = conn.cursor()
-orgidcheck = cur.execute(
-        'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiOrgID","1"])
-orgidexists = orgidcheck.fetchone()
-if not orgidexists == None:
-    OrgID = orgidexists['param']
-conn.close()
-
-# Establish Network ID
-global NetworkID
-NetworkID = ''
-conn = get_db_connection()
-cur = conn.cursor()
-networkidcheck = cur.execute(
-        'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiNetworkID","1"])
-networkidexists = networkidcheck.fetchone()
-if not networkidexists == None:
-    NetworkID = networkidexists['param']
-conn.close()
-
-# Kickstart nGrok instance for Meraki Webhook
-# Creates tunnel from nGrok on Port 80 (e.g. http://localhost:80/)
-http_tunnel = ngrok.connect()
+import app_startchecks as appsc
 
 # Kickstart Flask App
 app = Flask(__name__)
@@ -75,17 +12,17 @@ app.config['SECRET_KEY'] = 'vlad1234'  # (temporary random string)
 @app.route('/')
 def index():
     # Check DB Population, if none then redirect to First Time DB Population
-    conn = get_db_connection()
+    conn = appsc.get_db_connection()
     keycheck = conn.execute(
         'SELECT 1 FROM globalparams WHERE name=? LIMIT 1', ["MerakiAPIKey"])
     keyexists = keycheck.fetchone()
     print(keyexists)
     # (NEED TO CHECK FOR ORGID AND NETWORKID TOO!!! then redirect to relevant page)
-    if keyexists == None:
+    if appsc.keyexists == None:
         return redirect(url_for('firsttime'))
-    elif orgidexists == None:
+    elif appsc.orgidexists == None:
         return redirect(url_for('firsttimeorgid'))
-    elif networkidexists == None:
+    elif appsc.networkidexists == None:
         return redirect(url_for('firsttimenetworkid'))
     else:
         return render_template('index.html')
@@ -104,7 +41,7 @@ def firsttime():
             flash('Meraki API Key required!')
         else:
             # Update Database with Meraki API Key
-            conn = get_db_connection()
+            conn = appsc.get_db_connection()
             merakiapikey = conn.execute(
                 "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiAPIKey', ?, 'none', '1')", [MerakiAPIKey])
             conn.commit()
@@ -116,7 +53,7 @@ def firsttime():
             for Org in OrgList:
                 OrgID = Org['id']
                 OrgName = Org['name']
-                conn = get_db_connection()
+                conn = appsc.get_db_connection()
                 orgids = conn.execute(
                     "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiOrgID', ?, ?, '0')", [OrgID, OrgName])
                 conn.commit()
@@ -131,7 +68,7 @@ def firsttimeorgid():
     global dashboard
     global MERAKI_API_KEY
     # Grab all OrgIDs from Database
-    conn = get_db_connection()
+    conn = appsc.get_db_connection()
     merakiorgids = conn.execute(
         "SELECT * FROM globalparams WHERE name = 'MerakiOrgID'").fetchall()
     conn.close()
@@ -142,7 +79,7 @@ def firsttimeorgid():
             flash('Please enter one of these Org IDs')
         else:
             # Update Database with Active Org ID
-            conn = get_db_connection()
+            conn = appsc.get_db_connection()
             activeorgid = conn.execute(
                 "UPDATE globalparams SET active = '1' WHERE param = ?", [MerakiOrgID])
             conn.commit()
@@ -154,7 +91,7 @@ def firsttimeorgid():
             for Networks in OrgNetworks:
                 NetworkID = Networks['id']
                 NetworkName = Networks['name']
-                conn = get_db_connection()
+                conn = appsc.get_db_connection()
                 networkids = conn.execute(
                     "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiNetworkID', ?, ?, '0')", [NetworkID, NetworkName])
                 conn.commit()
@@ -166,7 +103,7 @@ def firsttimeorgid():
 @app.route('/firsttimenetworkid', methods=('GET', 'POST'))
 def firsttimenetworkid():
     # Grab all NetworkIDs from Database
-    conn = get_db_connection()
+    conn = appsc.get_db_connection()
     merakinetworkids = conn.execute(
         "SELECT * FROM globalparams WHERE name = 'MerakiNetworkID'").fetchall()
     conn.close()
@@ -177,7 +114,7 @@ def firsttimenetworkid():
             flash('Please enter one of these Network IDs')
         else:
             # Update Database with Active Org ID
-            conn = get_db_connection()
+            conn = appsc.get_db_connection()
             activeorgid = conn.execute(
                 "UPDATE globalparams SET active = '1' WHERE param = ?", [MerakiNetworkID])
             conn.commit()
