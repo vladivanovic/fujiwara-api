@@ -26,5 +26,3 @@ fi
 read -p "Enter your ngrok Token: " ngroktoken
 ngrok authtoken $ngroktoken
 
-# automated SQLite3 DB Setup
-python3 app/init_db.py
