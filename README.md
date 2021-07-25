@@ -36,3 +36,5 @@ What this project gives you:
 ## random idea list
 
 Something to be added here one day
+
+1. Can we containerize the deployment of the elements to lessen the host OS dependencies?
