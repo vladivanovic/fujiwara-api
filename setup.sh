@@ -22,7 +22,4 @@ else
 	echo "Cannot detect compatible OS"
 fi
 
-# ngrok Token Setup
-read -p "Enter your ngrok Token: " ngroktoken
-ngrok authtoken $ngroktoken
 
