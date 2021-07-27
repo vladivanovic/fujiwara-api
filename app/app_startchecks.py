@@ -1,8 +1,8 @@
 # All of the Imports
 import sqlite3
 import os
-import meraki
-from pyngrok import ngrok
+from pyngrok import ngrok, conf
+import yaml
 
 # Establish Database Connection Function
 def get_db_connection():
@@ -62,7 +62,20 @@ def GetMerakiNetworkID():
     conn.close()
 
 # Function to Kickstart nGrok instance for Meraki Webhook - Creates tunnel from nGrok on Port 80 (e.g. http://localhost:80/)
-def ngrok_tunnel():
+def ngrok_tunnel(ngrokkey):
+    if not ngrokkey == None:
+        doc = """
+            authtoken: {ngkey}
+            tunnels:
+                merakihud:
+                    addr: 80
+                    proto: http
+                    root_cas: trusted
+        """.format(length='multi-line', ngkey=ngrokkey)
+        with open("ngrok.yml","w") as f:
+            yaml.dump(doc, f, default_flow_style=False)
+    ngrokConfig = conf.PyngrokConfig(ngrok_path="./ngrok.yml")
+    conf.set_default(ngrokConfig)
     http_tunnel = ngrok.connect()
 
 

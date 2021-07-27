@@ -53,10 +53,12 @@ def firsttime():
     global dashboard
     if request.method == 'POST':
         MerakiAPIKey = request.form['MerakiAPIKey']
-        print(MerakiAPIKey)
+        ngrokKey = request.form['ngrokKey']
         if not MerakiAPIKey:
             flash('Meraki API Key required!')
         else:
+            # Update ngrok YML file
+            appsc.ngrok_tunnel(ngrokKey)
             # Update Database with Meraki API Key
             conn = appsc.get_db_connection()
             dbupdate = conn.execute(
