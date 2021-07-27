@@ -61,7 +61,8 @@ if not networkidexists == None:
     NetworkID = networkidexists['param']
 conn.close()
 
-# Kickstart nGrok instance for Meraki Webhook - Creates tunnel from nGrok on Port 80 (e.g. http://localhost:80/)
-http_tunnel = ngrok.connect()
+# Function to Kickstart nGrok instance for Meraki Webhook - Creates tunnel from nGrok on Port 80 (e.g. http://localhost:80/)
+def ngrok_tunnel():
+    http_tunnel = ngrok.connect()
 
 

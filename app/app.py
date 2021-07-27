@@ -30,7 +30,7 @@ def index():
 
 
 # First Time setup page - Meraki API Key
-@app.route('/firsttime', methods=('GET', 'POST'))
+@app.route('/firsttime', methods=['GET', 'POST'])
 def firsttime():
     global dashboard
     global MERAKI_API_KEY
@@ -63,7 +63,7 @@ def firsttime():
     return render_template('firsttime.html')
 
 # First Time setup page (Organization ID)
-@app.route('/firsttimeorgid', methods=('GET', 'POST'))
+@app.route('/firsttimeorgid', methods=['GET', 'POST'])
 def firsttimeorgid():
     global dashboard
     global MERAKI_API_KEY
@@ -100,7 +100,7 @@ def firsttimeorgid():
     return render_template('firsttimeorgid.html', merakiorgids=merakiorgids)
 
 # First Time setup page - Meraki Org ID
-@app.route('/firsttimenetworkid', methods=('GET', 'POST'))
+@app.route('/firsttimenetworkid', methods=['GET', 'POST'])
 def firsttimenetworkid():
     # Grab all NetworkIDs from Database
     conn = appsc.get_db_connection()
@@ -126,13 +126,13 @@ def firsttimenetworkid():
     return render_template('firsttimenetworkid.html', merakinetworkids=merakinetworkids)
 
 # Create an Admin Page
-@app.route('/admin', methods=('GET', 'POST'))
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
     ngrok_tunnel = ngrok.get_tunnels()
     return render_template('admin.html')
 
 # Create Webhook Listener
-@app.route('/listen', methods=('POST'))
+@app.route('/listen', methods=['POST'])
 def listen():
     print(request.json)
     return Response(status=200)
