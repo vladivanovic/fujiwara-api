@@ -37,3 +37,4 @@ What this project gives you:
 Something to be added here one day
 
 1. Can we containerize the deployment of the elements to lessen the host OS dependencies?
+2. Find out if we can use webhooks to get real time temp/humidity readings and update on the HUD page (instead of SNMP polling)
