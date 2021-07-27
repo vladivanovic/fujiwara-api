@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # All of the Imports
 import sqlite3
 import os
@@ -61,21 +63,14 @@ def GetMerakiNetworkID():
     return NetworkID
     conn.close()
 
-# Function to Kickstart nGrok instance for Meraki Webhook - Creates tunnel from nGrok on Port 80 (e.g. http://localhost:80/)
+# Function to Kickstart ngrok instance for Meraki Webhook - Creates tunnel from ngrok on Port 80 (e.g. http://localhost:80/)
 def ngrok_tunnel(ngrokkey):
     if not ngrokkey == None:
-        doc = """
-            authtoken: {ngkey}
-            tunnels:
-                merakihud:
-                    addr: 80
-                    proto: http
-                    root_cas: trusted
-        """.format(length='multi-line', ngkey=ngrokkey)
+        doc = [{'authtoken': ngrokkey, 'tunnels': {'merakihud': {'addr':'80','proto':'http','root_cas':'trusted'}}}]
         with open("ngrok.yml","w") as f:
-            yaml.dump(doc, f, default_flow_style=False)
-    ngrokConfig = conf.PyngrokConfig(ngrok_path="./ngrok.yml")
+            yaml.dump(doc, f)
+    os.chmod("ngrok.yml", 0o755)
+    ngrokFile = os.path.abspath("ngrok.yml")
+    ngrokConfig = conf.PyngrokConfig(ngrok_path=ngrokFile)
     conf.set_default(ngrokConfig)
     http_tunnel = ngrok.connect()
-
-
