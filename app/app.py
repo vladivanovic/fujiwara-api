@@ -1,6 +1,7 @@
 # All of the Imports
 from flask import Flask, render_template, request, url_for, flash, redirect, Response
 from werkzeug.exceptions import abort
+import meraki
 from pyngrok import ngrok
 import app_startchecks as appsc
 
@@ -8,32 +9,48 @@ import app_startchecks as appsc
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'vlad1234'  # (temporary random string)
 
+# Kickstart DB Setup
+appsc.firstTimeDbSetup()
+
+# Establish Global Variables
+global MERAKI_API_KEY
+global dashboard
+global OrgID
+global NetworkID
+
+test = appsc.GetMerakiAPIKey()
+print(test)
+
 # Default App Route
 @app.route('/')
 def index():
+    global dashboard
+    global MERAKI_API_KEY
     # Check DB Population, if none then redirect to First Time DB Population
     conn = appsc.get_db_connection()
-    keycheck = conn.execute(
-        'SELECT 1 FROM globalparams WHERE name=? LIMIT 1', ["MerakiAPIKey"])
-    keyexists = keycheck.fetchone()
-    print(keyexists)
-    # (NEED TO CHECK FOR ORGID AND NETWORKID TOO!!! then redirect to relevant page)
-    if appsc.keyexists == None:
+
+    # Checking for MerakiID, OrgID and NetworkID then redirecting as necessary
+    if appsc.GetMerakiAPIKey == None:
         return redirect(url_for('firsttime'))
-    elif appsc.orgidexists == None:
+    elif appsc.GetMerakiOrgID() == None:
+        MERAKI_API_KEY = appsc.GetMerakiAPIKey()
+        dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
         return redirect(url_for('firsttimeorgid'))
-    elif appsc.networkidexists == None:
+    elif appsc.GetMerakiNetworkID() == None:
+        MERAKI_API_KEY = appsc.GetMerakiAPIKey()
+        dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
         return redirect(url_for('firsttimenetworkid'))
     else:
+        MERAKI_API_KEY = appsc.GetMerakiAPIKey()
+        dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
         return render_template('index.html')
-
 
 
 # First Time setup page - Meraki API Key
 @app.route('/firsttime', methods=['GET', 'POST'])
 def firsttime():
-    global dashboard
     global MERAKI_API_KEY
+    global dashboard
     if request.method == 'POST':
         MerakiAPIKey = request.form['MerakiAPIKey']
         print(MerakiAPIKey)
@@ -42,12 +59,13 @@ def firsttime():
         else:
             # Update Database with Meraki API Key
             conn = appsc.get_db_connection()
-            merakiapikey = conn.execute(
+            dbupdate = conn.execute(
                 "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiAPIKey', ?, 'none', '1')", [MerakiAPIKey])
             conn.commit()
             conn.close()
             # Update Global Variable temporarily, when Flask reloads it'll grab it from the Database
             MERAKI_API_KEY = MerakiAPIKey
+            dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
             # Grab and Store Org IDs in DB
             OrgList = dashboard.organizations.getOrganizations()
             for Org in OrgList:
@@ -66,7 +84,7 @@ def firsttime():
 @app.route('/firsttimeorgid', methods=['GET', 'POST'])
 def firsttimeorgid():
     global dashboard
-    global MERAKI_API_KEY
+    global OrgID
     # Grab all OrgIDs from Database
     conn = appsc.get_db_connection()
     merakiorgids = conn.execute(
@@ -87,7 +105,7 @@ def firsttimeorgid():
             # Update Global Variable, when Flask reloads it'll grab it from the Database
             OrgID = MerakiOrgID
             # Grab and Store Network IDs in DB
-            OrgNetworks = dashboard.networks.getOrganizationNetworks(OrgID)
+            OrgNetworks = dashboard.organizations.getOrganizationNetworks(OrgID)
             for Networks in OrgNetworks:
                 NetworkID = Networks['id']
                 NetworkName = Networks['name']
@@ -102,6 +120,7 @@ def firsttimeorgid():
 # First Time setup page - Meraki Org ID
 @app.route('/firsttimenetworkid', methods=['GET', 'POST'])
 def firsttimenetworkid():
+    global NetworkID
     # Grab all NetworkIDs from Database
     conn = appsc.get_db_connection()
     merakinetworkids = conn.execute(
