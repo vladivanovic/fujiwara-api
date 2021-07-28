@@ -29,8 +29,6 @@ What this project gives you:
 ## testing needed
 
 1. Need to fix a few bits of existing app.py code - the section to check for partial first time setup (need to test this firsttime setup breaking)
-2. Add the init_db.py to the setup script to create an SQLite3 DB for us, then we need a run.sh to start the Flask instance of the app (need to test these)
-3. Break out modules from app.py to a modules folder and import, need to make app.py cleaner (moved to app_startchecks.py and updated app.py references, need to test how much is broken or not)
 
 ## random idea list
 
