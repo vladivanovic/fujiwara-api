@@ -151,8 +151,15 @@ def firsttimenetworkid():
 # Create an Admin Page
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    ngrok_tunnel = ngrok.get_tunnels()
-    return render_template('admin.html')
+    if request.method == 'POST':
+        appsc.startngroktunnel()
+    ngrok_tunnels = ngrok.get_tunnels()
+    if not ngrok_tunnels == None:
+        for tunnels in ngrok_tunnels:
+            ngrok_tunnel = str(tunnels)
+    else:
+        ngrok_tunnel = 'empty, hit restart'
+    return render_template('admin.html', ngroktunnel=ngrok_tunnel)
 
 # Create Webhook Listener
 @app.route('/listen', methods=['POST'])

@@ -74,3 +74,9 @@ def ngrok_tunnel(ngrokkey):
     ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile)
     conf.set_default(ngrokConfig)
     http_tunnel = ngrok.connect()
+
+def startngroktunnel():
+    ngrokFile = os.path.abspath("ngrok.yml")
+    ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile)
+    conf.set_default(ngrokConfig)
+    http_tunnel = ngrok.connect()
