@@ -66,11 +66,11 @@ def GetMerakiNetworkID():
 # Function to Kickstart ngrok instance for Meraki Webhook - Creates tunnel from ngrok on Port 80 (e.g. http://localhost:80/)
 def ngrok_tunnel(ngrokkey):
     if not ngrokkey == None:
-        doc = [{'authtoken': ngrokkey, 'tunnels': {'merakihud': {'addr':'80','proto':'http','root_cas':'trusted'}}}]
+        doc = {'authtoken': ngrokkey,'tunnels': {'merakihud': {'addr':80,'proto':'http','root_cas':'trusted'}}}
         with open("ngrok.yml","w") as f:
             yaml.dump(doc, f)
     os.chmod("ngrok.yml", 0o755)
     ngrokFile = os.path.abspath("ngrok.yml")
-    ngrokConfig = conf.PyngrokConfig(ngrok_path=ngrokFile)
+    ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile)
     conf.set_default(ngrokConfig)
     http_tunnel = ngrok.connect()
