@@ -19,7 +19,7 @@ What this project gives you:
 
 ## to-do-list
 
-1. Check if Automated Webhook + nGrok setup works fine (check if we can automate which webhook for Meraki to talk too via API)
+1. Add ngrok at set up and program running (store key in DB), after starting ngrok update the Meraki Webhook API, also limit what connections can come in via ngrok (if possible)
 2. Test APIs for WAN links, Device Status
 3. Find Python SNMP Module, install it and add to automated installer
 4. Build out ability for Python SNMP Module, pulling data and temp storing in SQLite3 DB
