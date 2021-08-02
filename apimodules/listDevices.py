@@ -2,7 +2,7 @@
 # list Meraki devices module
 # references credentials.json
 
-from pprintpp import pprint as pp
+from pprintpp import pprint
 import requests
 import os
 import json
@@ -11,24 +11,34 @@ import json
 
 dir = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(dir, "credentials.json")) as temp:
+with open(os.path.join(dir, "login/credentials.json")) as temp:
     creds = temp.read()
+
 
 jsonCreds = json.loads(creds)
 
-keyToken = str(jsonCreds["keyToken"])
+APIKey = str(jsonCreds["APIKey"])
 
-url  = str("https://api.meraki.com/api/v1/networks/" + jsonCreds["strNetID"] + "/devices")
+url  = str("https://api.meraki.com/api/v1/networks/" + jsonCreds["netID"] + "/devices")
 
 payload={}
 
 headers = {
-  'X-Cisco-Meraki-API-Key': keyToken
+  'X-Cisco-Meraki-API-Key': APIKey
 }
 
-## retrieve device list
+## retrieve device list and normalize data format
 
 response = requests.request("GET", url, headers=headers, data=payload)
+listResponse = json.loads(response.text.replace("null", "\" \""))
 
-jsonResp = json.loads(response.text)
-pp(jsonResp)
+# display output
+for item in listResponse:
+  if 'wan1Ip' in item:
+    print (item["model"])
+    print ("\t\t" + item["serial"] + "\t\tWan1: " + item["wan1Ip"] + "\t\tWan2: " + item["wan2Ip"])
+    print ("\n")
+  if 'lanIp' in item:
+    print (item["model"])
+    print ("\t\t" + item["serial"] + "\t\tLAN: " + item["lanIp"])
+    print ("\n")
