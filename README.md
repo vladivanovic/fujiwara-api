@@ -19,10 +19,13 @@ What this project gives you:
 
 ## to-do-list
 
-1. Add ngrok at set up and program running (store key in DB), after starting ngrok update the Meraki Webhook API, also limit what connections can come in via ngrok (if possible)
+Feature 1 (Vlad)
+1. Add ngrok at set up and program running (store key in DB), after starting ngrok update the Meraki Webhook API, also limit what connections can come in via ngrok (if possible) (do we break out the webhook API as its own flask instance at this point for security reasons?)
+Feature 2
 2. Test APIs for WAN links, Device Status
 3. Find Python SNMP Module, install it and add to automated installer
 4. Build out ability for Python SNMP Module, pulling data and temp storing in SQLite3 DB
+Feature 3 (Fred)
 5. To support the Sensor API w/ MV camera feature - need to build out a DB to create a mapping between system and camera?? or see if there is device location in the API then we can say any sensor in area X triggers a snapshot on one or multiple cameras in the same area (although differentiating between say what is in a DC and what is outside of a DC is hard so...)
 6. Get Beta MT sensor API, test with MV sensor Snapshot API
 
