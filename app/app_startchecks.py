@@ -32,10 +32,12 @@ def GetMerakiAPIKey():
     keycheck = cur.execute(
            'SELECT * FROM globalparams WHERE name=? LIMIT 1', ["MerakiAPIKey"])
     keyexists = keycheck.fetchone()
-    if not keyexists == None:
-        MERAKI_API_KEY = keyexists['param']
-    return MERAKI_API_KEY
     conn.close()
+    if keyexists is not None:
+        MERAKI_API_KEY = keyexists['param']
+        return MERAKI_API_KEY
+    else:
+        return None
 
 # Establish Meraki Org ID
 def GetMerakiOrgID():
@@ -45,10 +47,12 @@ def GetMerakiOrgID():
     orgidcheck = cur.execute(
             'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiOrgID","1"])
     orgidexists = orgidcheck.fetchone()
-    if not orgidexists == None:
-        OrgID = orgidexists['param']
-    return OrgID
     conn.close()
+    if orgidexists is not None:
+        OrgID = orgidexists['param']
+        return OrgID
+    else:
+        return None
 
 # Establish Network ID
 def GetMerakiNetworkID():
@@ -58,25 +62,23 @@ def GetMerakiNetworkID():
     networkidcheck = cur.execute(
             'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiNetworkID","1"])
     networkidexists = networkidcheck.fetchone()
-    if not networkidexists == None:
-        NetworkID = networkidexists['param']
-    return NetworkID
     conn.close()
+    if networkidexists is not None:
+        NetworkID = networkidexists['param']
+        return NetworkID
+    else:
+        return None
 
-# Function to Kickstart ngrok instance for Meraki Webhook - Creates tunnel from ngrok on Port 80 (e.g. http://localhost:80/)
+# Function to Create YAML and start ngrok instance on initial setup
 def ngrok_tunnel(ngrokkey):
-    if not ngrokkey == None:
-        doc = {'authtoken': ngrokkey,'tunnels': {'merakihud': {'addr':80,'proto':'http','root_cas':'trusted'}}}
+    if ngrokkey is not None:
+        doc = {'authtoken': ngrokkey,'tunnels': {'merakihud': {'addr':5000,'proto':'http','root_cas':'trusted'}}}
         with open("ngrok.yml","w") as f:
             yaml.dump(doc, f)
-    os.chmod("ngrok.yml", 0o755)
-    ngrokFile = os.path.abspath("ngrok.yml")
-    ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile)
-    conf.set_default(ngrokConfig)
-    http_tunnel = ngrok.connect()
 
+# Function to start ngrok instance e.g. when restart button on Admin page is hit
 def startngroktunnel():
     ngrokFile = os.path.abspath("ngrok.yml")
     ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile)
-    conf.set_default(ngrokConfig)
-    http_tunnel = ngrok.connect()
+    # conf.set_default(ngrokConfig)
+    http_tunnel = ngrok.connect(name='merakihud', pyngrok_config=ngrokConfig)

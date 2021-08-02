@@ -28,7 +28,7 @@ What this project gives you:
 
 ## testing needed
 
-1. Need to fix a few bits of existing app.py code - the section to check for partial first time setup (need to test this firsttime setup breaking)
+
 
 ## random idea list
 

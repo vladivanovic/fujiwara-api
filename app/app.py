@@ -20,25 +20,26 @@ global dashboard
 global OrgID
 global NetworkID
 
-test = appsc.GetMerakiAPIKey()
-print(test)
-
 # Default App Route
 @app.route('/')
 def index():
     global dashboard
     global MERAKI_API_KEY
-    # Check DB Population, if none then redirect to First Time DB Population
-    conn = appsc.get_db_connection()
-
+    # Testing
+    verifyMerAPIKey = appsc.GetMerakiAPIKey()
+    verifyMerOrgID = appsc.GetMerakiOrgID()
+    verifyMerNetID = appsc.GetMerakiNetworkID()
+    print(type(verifyMerAPIKey))
+    print(type(verifyMerOrgID))
+    print(type(verifyMerNetID))
     # Checking for MerakiID, OrgID and NetworkID then redirecting as necessary
-    if appsc.GetMerakiAPIKey == None:
+    if verifyMerAPIKey is None:
         return redirect(url_for('firsttime'))
-    elif appsc.GetMerakiOrgID() == None:
+    elif verifyMerOrgID is None:
         MERAKI_API_KEY = appsc.GetMerakiAPIKey()
         dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
         return redirect(url_for('firsttimeorgid'))
-    elif appsc.GetMerakiNetworkID() == None:
+    elif verifyMerNetID is None:
         MERAKI_API_KEY = appsc.GetMerakiAPIKey()
         dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
         return redirect(url_for('firsttimenetworkid'))
@@ -60,7 +61,8 @@ def firsttime():
             flash('Meraki API Key required!')
         else:
             # Update ngrok YML file
-            appsc.ngrok_tunnel(ngrokKey)
+            if ngrokKey is not None:
+                appsc.ngrok_tunnel(ngrokKey)
             # Update Database with Meraki API Key
             conn = appsc.get_db_connection()
             dbupdate = conn.execute(
@@ -154,11 +156,10 @@ def admin():
     if request.method == 'POST':
         appsc.startngroktunnel()
     ngrok_tunnels = ngrok.get_tunnels()
+    ngrok_tunnel = 'empty, hit restart'
     if not ngrok_tunnels == None:
         for tunnels in ngrok_tunnels:
             ngrok_tunnel = str(tunnels)
-    else:
-        ngrok_tunnel = 'empty, hit restart'
     return render_template('admin.html', ngroktunnel=ngrok_tunnel)
 
 # Create Webhook Listener
