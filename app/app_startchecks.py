@@ -5,6 +5,8 @@ import sqlite3
 import os
 from pyngrok import ngrok, conf
 import yaml
+import requests
+import json
 
 # Establish Database Connection Function
 def get_db_connection():
@@ -72,13 +74,28 @@ def GetMerakiNetworkID():
 # Function to Create YAML and start ngrok instance on initial setup
 def ngrok_tunnel(ngrokkey):
     if ngrokkey is not None:
-        doc = {'authtoken': ngrokkey,'tunnels': {'merakihud': {'addr':5000,'proto':'http','root_cas':'trusted'}}}
+        doc = {'authtoken': ngrokkey,'tunnels': {'merakihud': {'addr':5001,'proto':'http','root_cas':'trusted'}}}
         with open("ngrok.yml","w") as f:
             yaml.dump(doc, f)
+
+# Function to start webhook server
+def webhook_start():
+    exec(open('webhook.py').read())
+
+# Function to pull webhook status from webhook server
+def webhook_status():
+    try:
+        webhook_status_response = requests.post('http://localhost:5001/')
+    except requests.exceptions.RequestException as e:
+        json_res = None
+        return json_res
+        print("Webhook Error")
+    json_res = json.dumps(webhook_status_response)
+    return json_res
+    print(json_res)
 
 # Function to start ngrok instance e.g. when restart button on Admin page is hit
 def startngroktunnel():
     ngrokFile = os.path.abspath("ngrok.yml")
     ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile)
-    # conf.set_default(ngrokConfig)
     http_tunnel = ngrok.connect(name='merakihud', pyngrok_config=ngrokConfig)

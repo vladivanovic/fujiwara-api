@@ -2,7 +2,6 @@
 
 # All of the Imports
 from flask import Flask, render_template, request, url_for, flash, redirect, Response
-from werkzeug.exceptions import abort
 import meraki
 from pyngrok import ngrok
 import app_startchecks as appsc
@@ -25,14 +24,10 @@ global NetworkID
 def index():
     global dashboard
     global MERAKI_API_KEY
-    # Testing
+    # Checking for MerakiID, OrgID and NetworkID then redirecting to finish setup as necessary
     verifyMerAPIKey = appsc.GetMerakiAPIKey()
     verifyMerOrgID = appsc.GetMerakiOrgID()
     verifyMerNetID = appsc.GetMerakiNetworkID()
-    print(type(verifyMerAPIKey))
-    print(type(verifyMerOrgID))
-    print(type(verifyMerNetID))
-    # Checking for MerakiID, OrgID and NetworkID then redirecting as necessary
     if verifyMerAPIKey is None:
         return redirect(url_for('firsttime'))
     elif verifyMerOrgID is None:
@@ -154,18 +149,10 @@ def firsttimenetworkid():
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
-        appsc.startngroktunnel()
-    ngrok_tunnels = ngrok.get_tunnels()
-    ngrok_tunnel = 'empty, hit restart'
-    if not ngrok_tunnels == None:
-        for tunnels in ngrok_tunnels:
-            ngrok_tunnel = str(tunnels)
-    return render_template('admin.html', ngroktunnel=ngrok_tunnel)
-
-# Create Webhook Listener
-@app.route('/listen', methods=['POST'])
-def listen():
-    print(request.json)
-    return Response(status=200)
+        appsc.webhook_start()
+    webhook_status = appsc.webhook_status()
+    if webhook_status is None:
+        webhook_status = 'Service not up'
+    return render_template('admin.html', ngroktunnel=webhook_status)
 
 
