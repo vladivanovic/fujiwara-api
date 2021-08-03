@@ -1,18 +1,27 @@
 #!/usr/bin/env python3
 
-# All of the Imports
+# ------------------
+# IMPORTS
+# ------------------
+
 import sqlite3
 import os
 from pyngrok import ngrok, conf
 import yaml
 import requests
-import json
+import subprocess
+
+
+# ------------------
+# DB FUNCTIONS
+# ------------------
 
 # Establish Database Connection Function
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
+
 
 # Establish First Time Setup DB Setup Function
 def firstTimeDbSetup():
@@ -26,9 +35,13 @@ def firstTimeDbSetup():
         conn.commit()
         conn.close()
 
+
+# ------------------
+# APP STARTUP CHECK FUNCTIONS
+# ------------------
+
 # Establish Meraki API Key
 def GetMerakiAPIKey():
-    MERAKI_API_KEY = ''
     conn = get_db_connection()
     cur = conn.cursor()
     keycheck = cur.execute(
@@ -41,13 +54,13 @@ def GetMerakiAPIKey():
     else:
         return None
 
+
 # Establish Meraki Org ID
 def GetMerakiOrgID():
-    OrgID = ''
     conn = get_db_connection()
     cur = conn.cursor()
     orgidcheck = cur.execute(
-            'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiOrgID","1"])
+            'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiOrgID", "1"])
     orgidexists = orgidcheck.fetchone()
     conn.close()
     if orgidexists is not None:
@@ -56,13 +69,13 @@ def GetMerakiOrgID():
     else:
         return None
 
+
 # Establish Network ID
 def GetMerakiNetworkID():
-    NetworkID = ''
     conn = get_db_connection()
     cur = conn.cursor()
     networkidcheck = cur.execute(
-            'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiNetworkID","1"])
+            'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiNetworkID", "1"])
     networkidexists = networkidcheck.fetchone()
     conn.close()
     if networkidexists is not None:
@@ -71,31 +84,56 @@ def GetMerakiNetworkID():
     else:
         return None
 
+
+# ------------------
+# NGROK TUNNEL FUNCTIONS
+# ------------------
+
 # Function to Create YAML and start ngrok instance on initial setup
 def ngrok_tunnel(ngrokkey):
     if ngrokkey is not None:
-        doc = {'authtoken': ngrokkey,'tunnels': {'merakihud': {'addr':5001,'proto':'http','root_cas':'trusted'}}}
-        with open("ngrok.yml","w") as f:
+        doc = {'authtoken': ngrokkey, 'tunnels': {'merakihud': {'addr': 5001, 'proto': 'http', 'root_cas': 'trusted'}}}
+        with open("ngrok.yml", "w") as f:
             yaml.dump(doc, f)
 
-# Function to start webhook server
-def webhook_start():
-    exec(open('webhook.py').read())
-
-# Function to pull webhook status from webhook server
-def webhook_status():
-    try:
-        webhook_status_response = requests.post('http://localhost:5001/')
-    except requests.exceptions.RequestException as e:
-        json_res = None
-        return json_res
-        print("Webhook Error")
-    json_res = json.dumps(webhook_status_response)
-    return json_res
-    print(json_res)
 
 # Function to start ngrok instance e.g. when restart button on Admin page is hit
 def startngroktunnel():
     ngrokFile = os.path.abspath("ngrok.yml")
     ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile)
     http_tunnel = ngrok.connect(name='merakihud', pyngrok_config=ngrokConfig)
+
+
+# ------------------
+# WEBHOOK SERVER FUNCTIONS
+# ------------------
+
+# Function to start webhook server
+def webhook_start():
+    startwebhook = subprocess.call('./startWebhook.sh')
+    webhook_proccheck()
+    print('running webhook start function')
+
+
+def webhook_proccheck():
+    statuswebhook = subprocess.run('tmux ls', shell=True, stdout=subprocess.PIPE)
+    print(statuswebhook.stdout)
+    return statuswebhook.stdout
+
+
+# Function to pull webhook status from webhook server
+def webhook_status():
+    try:
+        webhook_status_response = requests.get('http://localhost:5001/')
+    except requests.exceptions.RequestException as e:
+        json_res = None
+        print("Webhook Error")
+        return json_res
+    json_res = webhook_status_response.json()
+    print(json_res)
+    return json_res
+
+
+# ------------------
+# Other
+# ------------------

@@ -1,9 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 # All of the Imports
-from flask import Flask, render_template, request, url_for, flash, redirect, Response
+from flask import Flask, render_template, request, url_for, flash, redirect
 import meraki
-from pyngrok import ngrok
 import app_startchecks as appsc
 
 # Kickstart Flask App
@@ -18,6 +17,7 @@ global MERAKI_API_KEY
 global dashboard
 global OrgID
 global NetworkID
+
 
 # Default App Route
 @app.route('/')
@@ -81,6 +81,7 @@ def firsttime():
     # If nothing else, render the page
     return render_template('firsttime.html')
 
+
 # First Time setup page (Organization ID)
 @app.route('/firsttimeorgid', methods=['GET', 'POST'])
 def firsttimeorgid():
@@ -118,6 +119,7 @@ def firsttimeorgid():
             return redirect(url_for('firsttimenetworkid'))
     return render_template('firsttimeorgid.html', merakiorgids=merakiorgids)
 
+
 # First Time setup page - Meraki Org ID
 @app.route('/firsttimenetworkid', methods=['GET', 'POST'])
 def firsttimenetworkid():
@@ -145,6 +147,7 @@ def firsttimenetworkid():
             return redirect(url_for('admin'))
     return render_template('firsttimenetworkid.html', merakinetworkids=merakinetworkids)
 
+
 # Create an Admin Page
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
@@ -153,7 +156,9 @@ def admin():
     webhook_status = appsc.webhook_status()
     if webhook_status is None:
         webhook_status = 'Service not up'
-    return render_template('admin.html', ngroktunnel=webhook_status)
+    return render_template('admin.html', webhook_status=webhook_status)
+
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
