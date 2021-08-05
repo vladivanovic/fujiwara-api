@@ -60,10 +60,11 @@ def firsttime():
                 appsc.ngrok_tunnel(ngrokKey)
             # Update Database with Meraki API Key
             conn = appsc.get_db_connection()
-            dbupdate = conn.execute(
-                "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiAPIKey', ?, 'none', '1')", [MerakiAPIKey])
+            cur = conn.cursor()
+            dbupdate = cur.execute(
+                "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiAPIKey', %s , 'none', '1')", [MerakiAPIKey])
+            cur.close()
             conn.commit()
-            conn.close()
             # Update Global Variable temporarily, when Flask reloads it'll grab it from the Database
             MERAKI_API_KEY = MerakiAPIKey
             dashboard = meraki.DashboardAPI(MERAKI_API_KEY)
@@ -73,10 +74,11 @@ def firsttime():
                 OrgID = Org['id']
                 OrgName = Org['name']
                 conn = appsc.get_db_connection()
-                orgids = conn.execute(
-                    "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiOrgID', ?, ?, '0')", [OrgID, OrgName])
+                cur = conn.cursor()
+                orgids = cur.execute(
+                    "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiOrgID', %s , %s , '0')", [OrgID, OrgName])
+                cur.close()
                 conn.commit()
-                conn.close()
             return redirect(url_for('firsttimeorgid'))
     # If nothing else, render the page
     return render_template('firsttime.html')
@@ -89,9 +91,11 @@ def firsttimeorgid():
     global OrgID
     # Grab all OrgIDs from Database
     conn = appsc.get_db_connection()
-    merakiorgids = conn.execute(
-        "SELECT * FROM globalparams WHERE name = 'MerakiOrgID'").fetchall()
-    conn.close()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT param FROM globalparams WHERE name = 'MerakiOrgID'")
+    merakiorgids = cur.fetchall()
+    cur.close()
     if request.method == 'POST':
         # Grab the confirmed Meraki Org ID
         MerakiOrgID = request.form['MerakiOrgID']
@@ -100,10 +104,11 @@ def firsttimeorgid():
         else:
             # Update Database with Active Org ID
             conn = appsc.get_db_connection()
-            activeorgid = conn.execute(
-                "UPDATE globalparams SET active = '1' WHERE param = ?", [MerakiOrgID])
+            cur = conn.cursor()
+            activeorgid = cur.execute(
+                "UPDATE globalparams SET active = '1' WHERE param = %s", [MerakiOrgID])
+            cur.close()
             conn.commit()
-            conn.close()
             # Update Global Variable, when Flask reloads it'll grab it from the Database
             OrgID = MerakiOrgID
             # Grab and Store Network IDs in DB
@@ -112,10 +117,11 @@ def firsttimeorgid():
                 NetworkID = Networks['id']
                 NetworkName = Networks['name']
                 conn = appsc.get_db_connection()
-                networkids = conn.execute(
-                    "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiNetworkID', ?, ?, '0')", [NetworkID, NetworkName])
+                cur = conn.cursor()
+                networkids = cur.execute(
+                    "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiNetworkID', %s , %s , '0')", [NetworkID, NetworkName])
+                cur.close()
                 conn.commit()
-                conn.close()
             return redirect(url_for('firsttimenetworkid'))
     return render_template('firsttimeorgid.html', merakiorgids=merakiorgids)
 
@@ -126,9 +132,11 @@ def firsttimenetworkid():
     global NetworkID
     # Grab all NetworkIDs from Database
     conn = appsc.get_db_connection()
-    merakinetworkids = conn.execute(
-        "SELECT * FROM globalparams WHERE name = 'MerakiNetworkID'").fetchall()
-    conn.close()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT param, other FROM globalparams WHERE name = 'MerakiNetworkID'")
+    merakinetworkids = cur.fetchall()
+    cur.close()
     if request.method == 'POST':
         # Grab the confirmed Meraki Network ID
         MerakiNetworkID = request.form['MerakiNetworkID']
@@ -137,10 +145,11 @@ def firsttimenetworkid():
         else:
             # Update Database with Active Org ID
             conn = appsc.get_db_connection()
-            activeorgid = conn.execute(
-                "UPDATE globalparams SET active = '1' WHERE param = ?", [MerakiNetworkID])
+            cur = conn.cursor()
+            activeorgid = cur.execute(
+                "UPDATE globalparams SET active = '1' WHERE param = %s ", [MerakiNetworkID])
+            cur.close()
             conn.commit()
-            conn.close()
             # Update Global Variable, when Flask reloads it'll grab it from the Database
             NetworkID = MerakiNetworkID
             # Grab and Store Network IDs in DB

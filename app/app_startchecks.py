@@ -4,7 +4,7 @@
 # IMPORTS
 # ------------------
 
-import sqlite3
+import psycopg2
 import os
 from pyngrok import ngrok, conf
 import yaml
@@ -18,22 +18,28 @@ import subprocess
 
 # Establish Database Connection Function
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(
+        host='localhost',
+        database='merakihuddb',
+        user='merakihud',
+        password='merakihudpassword'
+    )
     return conn
 
 
 # Establish First Time Setup DB Setup Function
 def firstTimeDbSetup():
-    if os.path.exists('database.db'):
-        print("Database File Exists")
-    else:
-        # Do initial DB File and Table setup
-        conn = get_db_connection()
-        with open('schema.sql') as schema:
-            conn.executescript(schema.read())
-        conn.commit()
-        conn.close()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = %s)', ('globalparams',))
+    table_exists = cur.fetchone()[0]
+    if table_exists is False: # Check if DB is empty or not
+        with open('schema.sql', 'r') as schema:
+            cur.execute(schema.read())
+            cur.close()
+            conn.commit()
+    else: # Do initial DB File and Table setup
+        return "Tables exist"
 
 
 # ------------------
@@ -44,12 +50,12 @@ def firstTimeDbSetup():
 def GetMerakiAPIKey():
     conn = get_db_connection()
     cur = conn.cursor()
-    keycheck = cur.execute(
-           'SELECT * FROM globalparams WHERE name=? LIMIT 1', ["MerakiAPIKey"])
-    keyexists = keycheck.fetchone()
-    conn.close()
+    cur.execute(
+           'SELECT param FROM globalparams WHERE name= %s LIMIT 1', ["MerakiAPIKey"])
+    keyexists = cur.fetchone()
+    cur.close()
     if keyexists is not None:
-        MERAKI_API_KEY = keyexists['param']
+        MERAKI_API_KEY = keyexists
         return MERAKI_API_KEY
     else:
         return None
@@ -59,12 +65,12 @@ def GetMerakiAPIKey():
 def GetMerakiOrgID():
     conn = get_db_connection()
     cur = conn.cursor()
-    orgidcheck = cur.execute(
-            'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiOrgID", "1"])
-    orgidexists = orgidcheck.fetchone()
-    conn.close()
+    cur.execute(
+            'SELECT param FROM globalparams WHERE name= %s AND active= %s LIMIT 1', ["MerakiOrgID", "1"])
+    orgidexists = cur.fetchone()
+    cur.close()
     if orgidexists is not None:
-        OrgID = orgidexists['param']
+        OrgID = orgidexists
         return OrgID
     else:
         return None
@@ -74,12 +80,12 @@ def GetMerakiOrgID():
 def GetMerakiNetworkID():
     conn = get_db_connection()
     cur = conn.cursor()
-    networkidcheck = cur.execute(
-            'SELECT param FROM globalparams WHERE name=? AND active=? LIMIT 1', ["MerakiNetworkID", "1"])
-    networkidexists = networkidcheck.fetchone()
+    cur.execute(
+            'SELECT param FROM globalparams WHERE name= %s AND active= %s LIMIT 1', ["MerakiNetworkID", "1"])
+    networkidexists = cur.fetchone()
     conn.close()
     if networkidexists is not None:
-        NetworkID = networkidexists['param']
+        NetworkID = networkidexists
         return NetworkID
     else:
         return None
