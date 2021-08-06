@@ -5,11 +5,13 @@
 # ------------------
 
 import psycopg2
+from psycopg2.extras import RealDictCursor
 import os
 from pyngrok import ngrok, conf
 import yaml
 import requests
 import subprocess
+import json
 
 
 # ------------------
@@ -49,13 +51,13 @@ def firstTimeDbSetup():
 # Establish Meraki API Key
 def GetMerakiAPIKey():
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(
            'SELECT param FROM globalparams WHERE name= %s LIMIT 1', ["MerakiAPIKey"])
     keyexists = cur.fetchone()
     cur.close()
     if keyexists is not None:
-        MERAKI_API_KEY = keyexists
+        MERAKI_API_KEY = keyexists['param']
         return MERAKI_API_KEY
     else:
         return None
@@ -64,13 +66,13 @@ def GetMerakiAPIKey():
 # Establish Meraki Org ID
 def GetMerakiOrgID():
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(
             'SELECT param FROM globalparams WHERE name= %s AND active= %s LIMIT 1', ["MerakiOrgID", "1"])
     orgidexists = cur.fetchone()
     cur.close()
     if orgidexists is not None:
-        OrgID = orgidexists
+        OrgID = orgidexists['param']
         return OrgID
     else:
         return None
@@ -79,13 +81,13 @@ def GetMerakiOrgID():
 # Establish Network ID
 def GetMerakiNetworkID():
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(
             'SELECT param FROM globalparams WHERE name= %s AND active= %s LIMIT 1', ["MerakiNetworkID", "1"])
     networkidexists = cur.fetchone()
     conn.close()
     if networkidexists is not None:
-        NetworkID = networkidexists
+        NetworkID = networkidexists['param']
         return NetworkID
     else:
         return None

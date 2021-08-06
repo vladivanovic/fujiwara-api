@@ -4,6 +4,7 @@
 from flask import Flask, render_template, request, url_for, flash, redirect
 import meraki
 import app_startchecks as appsc
+from psycopg2.extras import RealDictCursor
 
 # Kickstart Flask App
 app = Flask(__name__)
@@ -60,7 +61,7 @@ def firsttime():
                 appsc.ngrok_tunnel(ngrokKey)
             # Update Database with Meraki API Key
             conn = appsc.get_db_connection()
-            cur = conn.cursor()
+            cur = conn.cursor(cursor_factory=RealDictCursor)
             dbupdate = cur.execute(
                 "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiAPIKey', %s , 'none', '1')", [MerakiAPIKey])
             cur.close()
@@ -74,7 +75,7 @@ def firsttime():
                 OrgID = Org['id']
                 OrgName = Org['name']
                 conn = appsc.get_db_connection()
-                cur = conn.cursor()
+                cur = conn.cursor(cursor_factory=RealDictCursor)
                 orgids = cur.execute(
                     "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiOrgID', %s , %s , '0')", [OrgID, OrgName])
                 cur.close()
@@ -91,10 +92,13 @@ def firsttimeorgid():
     global OrgID
     # Grab all OrgIDs from Database
     conn = appsc.get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(
-        "SELECT param FROM globalparams WHERE name = 'MerakiOrgID'")
-    merakiorgids = cur.fetchall()
+        "SELECT param, other FROM globalparams WHERE name = 'MerakiOrgID'")
+    merakidborgids = cur.fetchall()
+    merakiorgids = []
+    for row in merakidborgids:
+        merakiorgids.append(dict(row))
     cur.close()
     if request.method == 'POST':
         # Grab the confirmed Meraki Org ID
@@ -104,7 +108,7 @@ def firsttimeorgid():
         else:
             # Update Database with Active Org ID
             conn = appsc.get_db_connection()
-            cur = conn.cursor()
+            cur = conn.cursor(cursor_factory=RealDictCursor)
             activeorgid = cur.execute(
                 "UPDATE globalparams SET active = '1' WHERE param = %s", [MerakiOrgID])
             cur.close()
@@ -132,10 +136,13 @@ def firsttimenetworkid():
     global NetworkID
     # Grab all NetworkIDs from Database
     conn = appsc.get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute(
         "SELECT param, other FROM globalparams WHERE name = 'MerakiNetworkID'")
-    merakinetworkids = cur.fetchall()
+    merakidbnetworkids = cur.fetchall()
+    merakinetworkids = []
+    for row in merakidbnetworkids:
+        merakinetworkids.append(dict(row))
     cur.close()
     if request.method == 'POST':
         # Grab the confirmed Meraki Network ID
