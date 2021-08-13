@@ -2,7 +2,6 @@
 # list Meraki devices module
 # references credentials.json
 
-from pprintpp import pprint
 import requests
 import os
 import json
@@ -24,7 +23,8 @@ url  = str("https://api.meraki.com/api/v1/networks/" + jsonCreds["netID"] + "/de
 payload={}
 
 headers = {
-  'X-Cisco-Meraki-API-Key': APIKey
+  'X-Cisco-Meraki-API-Key': APIKey ,
+  'Content-Type' : 'application/json'
 }
 
 ## retrieve device list and normalize data format
@@ -32,13 +32,12 @@ headers = {
 response = requests.request("GET", url, headers=headers, data=payload)
 listResponse = json.loads(response.text.replace("null", "\" \""))
 
+
 # display output
 for item in listResponse:
   if 'wan1Ip' in item:
-    print (item["model"])
+    print (item["model"] + "\t" + item["name"])
     print ("\t\t" + item["serial"] + "\t\tWan1: " + item["wan1Ip"] + "\t\tWan2: " + item["wan2Ip"])
-    print ("\n")
   if 'lanIp' in item:
-    print (item["model"])
+    print (item["model"] + "\t" + item["name"])
     print ("\t\t" + item["serial"] + "\t\tLAN: " + item["lanIp"])
-    print ("\n")
