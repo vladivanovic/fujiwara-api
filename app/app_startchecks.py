@@ -11,7 +11,8 @@ from pyngrok import ngrok, conf
 import yaml
 import requests
 import subprocess
-import json
+import meraki
+import re
 
 
 # ------------------
@@ -100,7 +101,7 @@ def GetMerakiNetworkID():
 # Function to Create YAML and start ngrok instance on initial setup
 def ngrok_tunnel(ngrokkey):
     if ngrokkey is not None:
-        doc = {'authtoken': ngrokkey, 'tunnels': {'merakihud': {'addr': 5001, 'proto': 'http', 'root_cas': 'trusted'}}}
+        doc = {'authtoken': ngrokkey, 'tunnels': {'merakihud': {'addr': 5001, 'proto': 'http', 'root_cas': 'trusted', 'bind_tls': 'true'}}}
         with open("ngrok.yml", "w") as f:
             yaml.dump(doc, f)
 
@@ -116,6 +117,11 @@ def startngroktunnel():
 # WEBHOOK SERVER FUNCTIONS
 # ------------------
 
+# Global Variables for functions in this section
+MerakiOrgID = GetMerakiOrgID()
+MerakiAPIKey = GetMerakiAPIKey()
+MerakiNetworkID = GetMerakiNetworkID()
+
 # Function to start webhook server
 def webhook_start():
     startwebhook = subprocess.call('./startWebhook.sh')
@@ -123,6 +129,7 @@ def webhook_start():
     print('running webhook start function')
 
 
+# Function to check webhook server process running
 def webhook_proccheck():
     statuswebhook = subprocess.run('tmux ls', shell=True, stdout=subprocess.PIPE)
     print(statuswebhook.stdout)
@@ -142,6 +149,30 @@ def webhook_status():
     return json_res
 
 
+# Function to setup the webhook server, update Meraki Dashboard automatically
+def merakiWebhookSetup(ngrok_tunnel):
+    global MerakiAPIKey
+    global MerakiNetworkID
+    dashboard = meraki.DashboardAPI(MerakiAPIKey)
+    getHttpServers = dashboard.networks.getNetworkWebhooksHttpServers(MerakiNetworkID)
+    for httpServer in getHttpServers:
+        delHttpServer = dashboard.networks.deleteNetworkWebhooksHttpServer(MerakiNetworkID, httpServer['id'])
+    httpServerName = 'auto-ngrok'
+    ngrok_tunnel = ngrok_tunnel[0]
+    urls = []
+    for url in ngrok_tunnel.split(" -> "):
+        urls.append(
+            re.search("(?P<actualurl>https?://[^\s]+)\"", url).group("actualurl")
+        )
+    final_url = urls[0] + "/listen"
+    setHttpServer = dashboard.networks.createNetworkWebhooksHttpServer(MerakiNetworkID, httpServerName, final_url, sharedSecret='auto-ngrok')
+    getHttpServers = dashboard.networks.getNetworkWebhooksHttpServers(MerakiNetworkID)
+    httpServerID = getHttpServers[0]['id']
+    setAlertsHttpServer = dashboard.networks.updateNetworkAlertsSettings(MerakiNetworkID, defaultDestinations={'httpServerIds': [httpServerID]})
+
+
 # ------------------
 # Other
+# ------------------
+
 # ------------------
