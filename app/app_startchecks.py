@@ -172,7 +172,40 @@ def merakiWebhookSetup(ngrok_tunnel):
 
 
 # ------------------
-# Other
+# ENGINE.IO FUNCTIONS
 # ------------------
 
-# ------------------
+def getNetworkDevices():
+    global MerakiAPIKey
+    global MerakiNetworkID
+    dashboard = meraki.DashboardAPI(MerakiAPIKey)
+    conn = get_db_connection()
+    cur = conn.cursor()
+    getdevices = dashboard.networks.getNetworkDevices(MerakiNetworkID)
+    for device in getdevices:
+        lat = device['lat']
+        long = device['lng']
+        devicename = device['name']
+        serial = device['serial']
+        macaddress = device['mac']
+        if 'wirelessMac' in device:  # May not exist for all devices
+            wirelessMac = device['wirelessMac']
+        else:
+            wirelessMac = None
+        model = device['model']
+        if 'lanIp' in device:
+            lanIp = device['lanIp']  # May not exist for all devices
+        else:
+            lanIp = None
+        if 'wanIp1' in device:
+            wanIp = device['wanIp1']  # May not exist for all devices
+        else:
+            wanIp = None
+        tags = device['tags']
+        networkId = device['networkId']
+        updatedevice = cur.execute(  # This needs to be fixed from ON CONFLICT DO NOTHING to ON CONFLICT devicename SET every other value
+            "INSERT INTO devices (lat, long, devicename, serial, macaddress, wirelessMac, model, lanIp, wanIp, tags, networkId) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING", [lat, long, devicename, serial, macaddress, wirelessMac, model, lanIp, wanIp, tags, networkId])
+    cur.close()
+    conn.commit()
+
+

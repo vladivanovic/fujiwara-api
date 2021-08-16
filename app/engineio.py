@@ -27,5 +27,12 @@ def status():
     return jsonify(status='SERVER UP')
 
 
+# Secret Status Page
+@app.route('/devices', methods=['GET'])
+def devices():
+    appsc.getNetworkDevices()
+    return Response(status=200)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=False)

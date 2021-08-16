@@ -43,7 +43,6 @@ def listen():
         print(alert)
         print(alert['sharedSecret'])
         if alert['sharedSecret'] == 'auto-ngrok':
-            print("hit this correct")
             return Response(status=200)
         else:
             abort(401)
