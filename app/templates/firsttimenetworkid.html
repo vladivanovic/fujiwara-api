@@ -8,7 +8,7 @@
 
 	<div id='ListResults'>
 	<table class="table">
-	<tr><th scope="col">Param</th><th scope="col">Other</th></tr>
+	<tr><th scope="col">Network ID</th><th scope="col">Network Name</th></tr>
 	{% for networkid in merakinetworkids %}
 		<tr><th scope="row">{{ networkid['param'] }}</th><td>{{ networkid['other'] }}</td></tr>
 	{% endfor %}

@@ -1,0 +1,52 @@
+
+For Fred - example door sensor data I will forward to you
+
+127.0.0.1 - - [13/Aug/2021 17:36:30] "POST /listen HTTP/1.1" 200 -
+{
+    'version': '0.1',
+    'sharedSecret': 'auto-ngrok',
+    'sentAt': '2021-08-13T08:36:29.831349Z',
+    'organizationId': '599325',
+    'organizationName': 'Vlad Ivanovic',
+    'organizationUrl': 'https://n70.meraki.com/o/K0X0Rd/manage/organization/overview',
+    'networkId': 'L_602356450160805816',
+    'networkName': 'Vlad Home Network',
+    'networkUrl': 'https://n70.meraki.com/Vlad-Home-Networ/n/B7Ik3cgb/manage/nodes/list',
+    'networkTags': [],
+    'deviceSerial': 'Q3CC-JL2P-8KDU',
+    'deviceMac': 'f8:9e:28:7e:27:fc',
+    'deviceName': 'Door Sensor MT20',
+    'deviceUrl': 'https://n70.meraki.com/Vlad-Home-Networ/n/B7Ik3cgb/manage/nodes/new_list/273358167877628',
+    'deviceTags': [],
+    'deviceModel': 'MT20',
+    'alertId': '602356450234795601',
+    'alertType': 'Sensor change detected',
+    'alertTypeId': 'sensor_alert',
+    'alertLevel': 'informational',
+    'occurredAt': '2021-08-13T08:36:24.732000Z',
+    'alertData': {
+        'alertConfigId': 602356450161244932,
+        'triggerData': [{
+            'conditionId': 323,
+            'trigger': {
+                'ts': 1628843784,
+                'type': 'door',
+                'nodeId': 273358167877628,
+                'sensorValue': 0.0
+                }
+            }],
+        'startedAlerting': False
+    }
+}
+
+
+Example data for Devices (MV, Sensor, MR, MX, MS)
+
+{'lat': 37.4180951010362, 'lng': -122.098531723022, 'address': '', 'serial': 'Q2FV-YMUH-8LH7', 'mac': '34:56:fe:a2:60:9f', 'lanIp': '192.168.11.13', 'url': 'https://n70.meraki.com/Vlad-Home-Networ/n/kYjm7bgb/manage/nodes/new_list/57548243886239', 'networkId': 'L_602356450160805816', 'tags': [], 'name': 'MV12WE Camera', 'model': 'MV12WE', 'firmware': 'camera-4-13', 'floorPlanId': None, 'wirelessMac': '34:56:fe:a2:60:a0'}
+{'lat': 35.6496270417911, 'lng': 139.75094653666, 'address': 'Unit 1003, Shiba 4-6-26, Minato-ku, Tokyo, Japan', 'serial': 'Q2JD-GNFV-T9G9', 'mac': 'e0:55:3d:b0:8c:90', 'lanIp': '192.168.11.17', 'url': 'https://n70.meraki.com/Vlad-Home-Networ/n/m5BO9bgb/manage/nodes/new_list/246656711822480', 'networkId': 'L_602356450160805816', 'tags': [], 'beaconIdParams': {'uuid': '6654eef3-d3c5-4da0-aa16-d3f330836282', 'major': 0, 'minor': 0}, 'name': 'Home AP 1', 'model': 'MR32', 'firmware': 'wireless-26-8-2', 'floorPlanId': 'g_602356450160811610'}
+{'lat': 37.4180951010362, 'lng': -122.098531723022, 'address': '', 'serial': 'Q3AL-YL4Z-KBMA', 'mac': 'f8:9e:28:73:95:99', 'lanIp': '192.168.11.18', 'url': 'https://n70.meraki.com/Vlad-Home-Networ/n/m5BO9bgb/manage/nodes/new_list/273358167184793', 'networkId': 'L_602356450160805816', 'tags': [], 'beaconIdParams': {'uuid': '6654eef3-d3c5-4da0-aa16-d3f330836282', 'major': 0, 'minor': 1}, 'name': 'Home AP 2', 'model': 'MR44', 'firmware': 'wireless-27-7-1', 'floorPlanId': None}
+{'lat': 37.4180951010362, 'lng': -122.098531723022, 'address': '', 'serial': 'Q3CB-ACTR-S5LV', 'mac': 'f8:9e:28:78:4f:e2', 'lanIp': None, 'url': 'https://n70.meraki.com/Vlad-Home-Networ/n/B7Ik3cgb/manage/nodes/new_list/273358167494626', 'networkId': 'L_602356450160805816', 'tags': [], 'name': 'Water Sensor MT12', 'model': 'MT12', 'firmware': 'Not running configured version', 'floorPlanId': None}
+{'lat': 37.4180951010362, 'lng': -122.098531723022, 'address': '', 'serial': 'Q3CA-9CXJ-V88B', 'mac': '2c:3f:0b:ff:df:b2', 'lanIp': None, 'url': 'https://n70.meraki.com/Vlad-Home-Networ/n/B7Ik3cgb/manage/nodes/new_list/48649295880114', 'networkId': 'L_602356450160805816', 'tags': [], 'name': 'Temp Sensor MT10', 'model': 'MT10', 'firmware': 'Not running configured version', 'floorPlanId': None}
+{'lat': 37.4180951010362, 'lng': -122.098531723022, 'address': '', 'serial': 'Q3CC-JL2P-8KDU', 'mac': 'f8:9e:28:7e:27:fc', 'lanIp': None, 'url': 'https://n70.meraki.com/Vlad-Home-Networ/n/B7Ik3cgb/manage/nodes/new_list/273358167877628', 'networkId': 'L_602356450160805816', 'tags': [], 'name': 'Door Sensor MT20', 'model': 'MT20', 'firmware': 'Not running configured version', 'floorPlanId': None}
+{'lat': 35.6496417537724, 'lng': 139.750968329608, 'address': 'U1006 Shiba 4-6-26, Minato, Tokyo, Japan 108-0014', 'serial': 'Q2HP-BDVB-5LW3', 'mac': '88:15:44:e4:2b:0f', 'lanIp': '192.168.11.12', 'url': 'https://n70.meraki.com/Vlad-Home-Networ/n/pmjiicgb/manage/nodes/new_list/149624931494671', 'networkId': 'L_602356450160805816', 'tags': [], 'name': 'Home Switch', 'model': 'MS220-8P', 'switchProfileId': None, 'firmware': 'switch-14-25', 'floorPlanId': 'g_602356450160811610'}
+{'lat': 35.6496448868792, 'lng': 139.750966737047, 'address': 'Shiba 4-6-26 Minato, Tokyo, Japan', 'serial': 'Q2KN-B6HG-2JCX', 'mac': 'e0:55:3d:8d:74:30', 'wan1Ip': '192.168.11.6', 'wan2Ip': None, 'url': 'https://n70.meraki.com/Vlad-Home-Networ/n/8mcgMdgb/manage/nodes/new_list/246656709522480', 'networkId': 'L_602356450160805816', 'tags': [], 'name': 'Home Firewall', 'model': 'MX64', 'firmware': 'Not running configured version', 'floorPlanId': 'g_602356450160811610'}
