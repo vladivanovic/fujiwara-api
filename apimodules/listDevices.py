@@ -5,6 +5,7 @@
 import requests
 import os
 import json
+# from pprintpp import pprint (for testing only)
 
 ## declaration and initialization
 
@@ -31,6 +32,8 @@ headers = {
 
 response = requests.request("GET", url, headers=headers, data=payload)
 listResponse = json.loads(response.text.replace("null", "\" \""))
+
+#pprint (listResponse)
 
 
 # display output
