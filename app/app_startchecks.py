@@ -169,6 +169,70 @@ def merakiWebhookSetup(ngrok_tunnel):
     getHttpServers = dashboard.networks.getNetworkWebhooksHttpServers(MerakiNetworkID)
     httpServerID = getHttpServers[0]['id']
     setAlertsHttpServer = dashboard.networks.updateNetworkAlertsSettings(MerakiNetworkID, defaultDestinations={'httpServerIds': [httpServerID]})
+    sensorSerials = getMerakiSensors()
+    setupMerakiSensorAlerts(httpServerID, sensorSerials)
+
+
+# Auto-setup the Sensor Alerts + Device Mapping the traditional way, no API method yet
+def setupMerakiSensorAlerts(httpServerID, sensorSerials):
+    global MerakiAPIKey
+    global MerakiNetworkID
+    url = "https://api.meraki.com/api/v1//networks/" + MerakiNetworkID + "/sensor/alerts/profiles"
+    sensor_list = []
+    for sensor in sensorSerials:
+        sensor_list.append(sensor['serial'])
+    payload = {
+        "id": 1,
+        "name": "Fujiwara-API Webhook Profile",
+        "scheduleId": "",
+        "conditions":
+            [
+                {
+                    "type": "water_detection",
+                    "disabled": false,
+                    "direction": "+",
+                    "threshold": 1
+                },
+                {
+                    "type": "door",
+                    "disabled": false,
+                    "duration": 0,
+                    "direction": "+",
+                    "threshold": 1,
+                    "disabledDuration": true
+                }
+            ],
+        "recipients":
+            {
+                "emails": [],
+                "smsNumbers": [],
+                "httpServerIds": [ httpServerID ]
+            },
+        "serials": sensor_list
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-Cisco-Meraki-API-Key": MerakiAPIKey
+    }
+    response = requests.request('POST', url, headers=headers, data=payload)
+    print(response.text.encode('utf8'))
+
+
+# Get all the Meraki Sensors (traditional way, no new API method)
+def getMerakiSensors():
+    global MerakiAPIKey
+    global MerakiNetworkID
+    url = 'https://api.meraki.com/api/v1/networks/' + MerakiNetworkID + '/sensors'
+    payload = None
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-Cisco-Meraki-API-Key": MerakiAPIKey
+    }
+    response = requests.request('POST', url, headers=headers, data=payload)
+    print(response.text.encode('utf8'))
+    return response
 
 
 # ------------------
