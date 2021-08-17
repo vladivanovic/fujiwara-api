@@ -11,8 +11,9 @@ if [ $ID == "ubuntu" ]; then
 	sudo apt-get install python3 python3-pip python3-dev build-essential tmux postgresql postgresql-contrib libpq-dev -y
 	sudo snap install ngrok
 	pip3 install meraki flask pyngrok psycopg2
-	# Ubuntu 20.04 Postgres initial setup
+	# Ubuntu 20.04 Postgres initial setup, cluster start is in there for WSL2 primarily, seems to autostart on native Ubuntu
 	sudo su postgres << EOF
+	pg_ctlcluster 12 main start
 	createdb merakihuddb;
 	psql -c "CREATE USER merakihud WITH PASSWORD 'merakihudpassword';"
 	psql -c "GRANT ALL PRIVILEGES ON DATABASE merakihuddb TO merakihud;"
