@@ -58,13 +58,16 @@ def get_snapshot_by_mt_door_event(mt20serial, mv_serial, num_entries, delta_seco
             new_ts_iso = datetime.datetime.isoformat(time_plus_delta)
             new_ts_unix = time_plus_delta.timestamp()
 
-            print (new_ts_iso)
-            print (new_ts_unix)
+            # print (new_ts_iso)
+            # print (new_ts_unix)
 
             snapshot_url = get_snapshot_url_mv_camera(mv_serial, new_ts_iso)
             
-            os.makedirs(os.path.dirname(f"images/{mv_serial}/"), exist_ok=True) #create folders if not exists
-            time.sleep(5) #wait at least 5 seconds before trying to download the image
+            #create folders if none exists
+            os.makedirs(os.path.dirname(f"images/{mv_serial}/"), exist_ok=True) 
+            
+            #wait at least 5 seconds before trying to download the image
+            time.sleep(5) 
 
             retries = 0
             success = False
