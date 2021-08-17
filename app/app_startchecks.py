@@ -7,7 +7,7 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
-from pyngrok import ngrok, conf
+from pyngrok import ngrok, conf, exception
 import yaml
 import requests
 import subprocess
@@ -108,9 +108,12 @@ def ngrok_tunnel(ngrokkey):
 
 # Function to start ngrok instance e.g. when restart button on Admin page is hit
 def startngroktunnel():
-    ngrokFile = os.path.abspath("ngrok.yml")
-    ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile)
-    http_tunnel = ngrok.connect(name='merakihud', pyngrok_config=ngrokConfig)
+    try:
+        ngrokFile = os.path.abspath("ngrok.yml")
+        ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile, reconnect_session_retries=4)
+        http_tunnel = ngrok.connect(name='merakihud', pyngrok_config=ngrokConfig)
+    except exception.PyngrokNgrokError as e:
+        print(e.ngrok_logs)
 
 
 # ------------------
