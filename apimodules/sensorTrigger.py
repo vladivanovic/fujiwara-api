@@ -24,7 +24,7 @@ def get_snapshot_url_mv_camera(mv_serial, timestamp_iso):
     try:
         r_snapshoturl = requests.request('POST', f"https://api.meraki.com/api/v1/devices/{mv_serial}/camera/generateSnapshot", headers=headers, data=json.dumps(data))
         r_snapshoturl_json = r_snapshoturl.json()
-        print(f"Got URL for {mv_serial}")
+        print(f"Image URL found for: {mv_serial}")
         #print (r_snapshoturl_json)
         return r_snapshoturl_json["url"]
     except Exception as e:
@@ -58,14 +58,13 @@ def get_snapshot_by_mt_door_event(mt20serial, mv_serial, num_entries, delta_seco
             new_ts_iso = datetime.datetime.isoformat(time_plus_delta)
             new_ts_unix = time_plus_delta.timestamp()
 
-            # print (new_ts_iso)
-            # print (new_ts_unix)
+            print (new_ts_iso)
+            print (new_ts_unix)
 
             snapshot_url = get_snapshot_url_mv_camera(mv_serial, new_ts_iso)
-            print (snapshot_url)
-
-            time.sleep(5) #wait at least 5 seconds before trying to download the image
+            
             os.makedirs(os.path.dirname(f"images/{mv_serial}/"), exist_ok=True) #create folders if not exists
+            time.sleep(5) #wait at least 5 seconds before trying to download the image
 
             retries = 0
             success = False
@@ -78,11 +77,11 @@ def get_snapshot_by_mt_door_event(mt20serial, mv_serial, num_entries, delta_seco
                         success = True
                 except Exception as e:
                     retries += 1
-                    print(f"Error when downloading images: {e}")
-                    print(f"Retry: {retries}")
+                    print(f"Error downloading image: {e}")
+                    print(f"Retry attempt: {retries}")
                     time.sleep(30)
                     if retries > 5:
-                        print("Error: Avoid endless loop")
+                        print("Error: max 5 retries")
                         success = True
 
 
