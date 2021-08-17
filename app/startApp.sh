@@ -5,7 +5,7 @@ if ps ax |grep -v grep | grep 'postgres' > /dev/null
   then
     echo 'PostGreSQL is running'
   else
-    sudo /etc/init.d/postgres start
+    sudo /etc/init.d/postgresql start
 fi
 
 # Kickstart Main Flask App in Screen Instance
