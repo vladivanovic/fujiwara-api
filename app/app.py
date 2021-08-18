@@ -169,10 +169,14 @@ def firsttimenetworkid():
 def admin():
     if request.method == 'POST':
         appsc.webhook_start()
+        appsc.engineio_start()
     webhook_status = appsc.webhook_status()
+    engineio_status = appsc.engineio_status()
     if webhook_status is None:
-        webhook_status = 'Service not up'
-    return render_template('admin.html', webhook_status=webhook_status)
+        webhook_status = 'Webhook not up'
+    if engineio_status is None:
+        engineio_status = 'Engine.IO is not up'
+    return render_template('admin.html', webhook_status=webhook_status, engineio_status=engineio_status)
 
 
 if __name__ == '__main__':

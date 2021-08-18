@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = 'engineio1234'  # (temporary random string)
 # Default App Route and Webhook Status
 @app.route('/')
 def index():
-    return Response(status=200)
+    return jsonify(status='TUNNEL DOWN'),  Response(status=200)
 
 
 # Create Webhook Listener

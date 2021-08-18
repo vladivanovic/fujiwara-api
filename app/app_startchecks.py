@@ -13,6 +13,7 @@ import requests
 import subprocess
 import meraki
 import re
+import json
 
 
 # ------------------
@@ -36,12 +37,12 @@ def firstTimeDbSetup():
     cur = conn.cursor()
     cur.execute('SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = %s)', ('globalparams',))
     table_exists = cur.fetchone()[0]
-    if table_exists is False: # Check if DB is empty or not
+    if table_exists is False:  # Check if DB is empty or not
         with open('schema.sql', 'r') as schema:
             cur.execute(schema.read())
             cur.close()
             conn.commit()
-    else: # Do initial DB File and Table setup
+    else:  # Do initial DB File and Table setup
         return "Tables exist"
 
 
@@ -182,35 +183,30 @@ def setupMerakiSensorAlerts(httpServerID, sensorSerials):
     global MerakiNetworkID
     url = "https://api.meraki.com/api/v1//networks/" + MerakiNetworkID + "/sensor/alerts/profiles"
     sensor_list = []
-    for sensor in sensorSerials:
+    for sensor in sensorSerials['sensors']:
         sensor_list.append(sensor['serial'])
     payload = {
-        "id": 1,
         "name": "Fujiwara-API Webhook Profile",
         "scheduleId": "",
         "conditions":
-            [
-                {
-                    "type": "water_detection",
-                    "disabled": false,
-                    "direction": "+",
-                    "threshold": 1
-                },
-                {
-                    "type": "door",
-                    "disabled": false,
-                    "duration": 0,
-                    "direction": "+",
-                    "threshold": 1,
-                    "disabledDuration": true
-                }
-            ],
-        "recipients":
-            {
-                "emails": [],
-                "smsNumbers": [],
-                "httpServerIds": [ httpServerID ]
+            [{
+                "type": "water_detection",
+                "direction": "+",
+                "threshold": 1
             },
+            {
+                "type": "door",
+                "duration": 0,
+                "direction": "+",
+                "threshold": 1,
+            }],
+        "recipients": {
+            "emails": [],
+            "smsNumbers": [],
+            "httpServerIds": [
+                httpServerID
+            ]
+        },
         "serials": sensor_list
     }
     headers = {
@@ -219,7 +215,7 @@ def setupMerakiSensorAlerts(httpServerID, sensorSerials):
         "X-Cisco-Meraki-API-Key": MerakiAPIKey
     }
     response = requests.request('POST', url, headers=headers, data=payload)
-    print(response.text.encode('utf8'))
+    print(response.text)
 
 
 # Get all the Meraki Sensors (traditional way, no new API method)
@@ -233,14 +229,34 @@ def getMerakiSensors():
         "Accept": "application/json",
         "X-Cisco-Meraki-API-Key": MerakiAPIKey
     }
-    response = requests.request('POST', url, headers=headers, data=payload)
-    print(response.text.encode('utf8'))
+    response = requests.request('GET', url, headers=headers, data=payload)
+    response = json.loads(response.text)
     return response
 
 
 # ------------------
 # ENGINE.IO FUNCTIONS
 # ------------------
+
+# Function to start webhook server
+def engineio_start():
+    startwebhook = subprocess.call('./startEngineIO.sh')
+    webhook_proccheck()
+    print('running engineio start function')
+
+
+# Function to pull webhook status from webhook server
+def engineio_status():
+    try:
+        engineio_status_response = requests.get('http://localhost:5002/')
+    except requests.exceptions.RequestException as e:
+        json_res = None
+        print("Engine.IO Error")
+        return json_res
+    json_res = engineio_status_response.json()
+    print(json_res)
+    return json_res
+
 
 def getNetworkDevices():
     global MerakiAPIKey
