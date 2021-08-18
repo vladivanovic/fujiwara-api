@@ -209,6 +209,7 @@ def setupMerakiSensorAlerts(httpServerID, sensorSerials):
         },
         "serials": sensor_list
     }
+    payload = json.dumps(payload)
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json",
