@@ -25,7 +25,6 @@ def get_snapshot_url_mv_camera(mv_serial, timestamp_iso):
         r_snapshoturl = requests.request('POST', f"https://api.meraki.com/api/v1/devices/{mv_serial}/camera/generateSnapshot", headers=headers, data=json.dumps(data))
         r_snapshoturl_json = r_snapshoturl.json()
         print(f"Image URL found for: {mv_serial}")
-        #print (r_snapshoturl_json)
         return r_snapshoturl_json["url"]
     except Exception as e:
         return print(f"Error: {e}")
@@ -104,7 +103,7 @@ if __name__ == "__main__":
     mt20serial = str(jsonCreds["serial"])
     
     # Dev Note: currently hardcoded. Either query via db or provide during function call
-    mv_serial = "Q2FV-WZDD-NLJC"
+    mv_serial = ""
     
     print("Sensor Triggered: Image capture processing...")
     get_snapshot_by_mt_door_event(mt20serial, mv_serial, 3, 5) #mt20serial, mv_serial, num_entries, delta_seconds
