@@ -3,8 +3,6 @@
 from flask import Flask, render_template, request, Response, jsonify, abort
 from pyngrok import ngrok
 import app_startchecks as appsc
-import json
-import meraki
 
 # Kickstart Flask App
 app = Flask(__name__)
@@ -13,6 +11,7 @@ app.config['SECRET_KEY'] = 'fred1234'  # (temporary random string)
 # Start ngrok tunnel
 appsc.startngroktunnel()
 
+# Get ngrok Tunnels for auto-set Meraki Webhooks
 ngrok_tunnels = ngrok.get_tunnels()
 ngrok_tunnel = []
 if ngrok_tunnels is not None:

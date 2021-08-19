@@ -111,7 +111,9 @@ def ngrok_tunnel(ngrokkey):
 def startngroktunnel():
     try:
         ngrokFile = os.path.abspath("ngrok.yml")
-        ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile, reconnect_session_retries=4)
+        ngrokBinary = os.path.abspath("ngrok/ngrok")
+        ngrokConfig = conf.PyngrokConfig(config_path=ngrokFile, ngrok_path=ngrokBinary, reconnect_session_retries=4)
+        conf.set_default(ngrokConfig)
         http_tunnel = ngrok.connect(name='merakihud', pyngrok_config=ngrokConfig)
     except exception.PyngrokNgrokError as e:
         print(e.ngrok_logs)
@@ -128,7 +130,7 @@ MerakiNetworkID = GetMerakiNetworkID()
 
 # Function to start webhook server
 def webhook_start():
-    startwebhook = subprocess.call('./startWebhook.sh')
+    startwebhook = subprocess.Popen('./startWebhook.sh', shell=True)
     webhook_proccheck()
     print('running webhook start function')
 
@@ -241,7 +243,7 @@ def getMerakiSensors():
 
 # Function to start webhook server
 def engineio_start():
-    startwebhook = subprocess.call('./startEngineIO.sh')
+    startengineio = subprocess.call('./startEngineIO.sh')
     webhook_proccheck()
     print('running engineio start function')
 

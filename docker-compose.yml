@@ -1,0 +1,21 @@
+# Docker Compose file for easier build and test in local machine
+version: "3"
+services:
+  main_app:
+    build: .
+    image: main_app:latest
+    command: python3 app.py
+    ports:
+      - "5000:5000"
+  webhook_app:
+    build: .
+    image: webhook_app:latest
+    command: python3 webhook.py
+    ports:
+      - "5001:5001"
+  engineio_app:
+    build: .
+    image: engineio_app:latest
+    command: python3 engineio.py
+    ports:
+      - "5002:5002"
