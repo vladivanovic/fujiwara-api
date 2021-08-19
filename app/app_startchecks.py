@@ -23,7 +23,7 @@ import json
 # Establish Database Connection Function
 def get_db_connection():
     conn = psycopg2.connect(
-        host='localhost',
+        host='127.0.0.1',
         database='merakihuddb',
         user='merakihud',
         password='merakihudpassword'

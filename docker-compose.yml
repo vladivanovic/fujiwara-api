@@ -1,21 +1,33 @@
 # Docker Compose file for easier build and test in local machine
-version: "3"
+version: "3.7"
 services:
   main_app:
-    build: .
-    image: main_app:latest
-    command: python3 app.py
+    build:
+      context: .
+    network_mode: host
+    image: fujiwara-api:latest
+    command: python3 app/app.py
     ports:
       - "5000:5000"
+    volumes:
+      - .:/app
   webhook_app:
-    build: .
-    image: webhook_app:latest
-    command: python3 webhook.py
+    build:
+      context: .
+    network_mode: host
+    image: fujiwara-api:latest
+    command: python3 app/webhook.py
     ports:
       - "5001:5001"
+    volumes:
+      - .:/app
   engineio_app:
-    build: .
-    image: engineio_app:latest
-    command: python3 engineio.py
+    build:
+      context: .
+    network_mode: host
+    image: fujiwara-api:latest
+    command: python3 app/engineio.py
     ports:
       - "5002:5002"
+    volumes:
+      - .:/app
