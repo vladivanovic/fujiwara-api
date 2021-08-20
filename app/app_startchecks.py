@@ -14,6 +14,7 @@ import subprocess
 import meraki
 import re
 import json
+import docker
 
 
 # ------------------
@@ -130,16 +131,8 @@ MerakiNetworkID = GetMerakiNetworkID()
 
 # Function to start webhook server
 def webhook_start():
-    startwebhook = subprocess.Popen('./startWebhook.sh', shell=True)
-    webhook_proccheck()
-    print('running webhook start function')
-
-
-# Function to check webhook server process running
-def webhook_proccheck():
-    statuswebhook = subprocess.run('tmux ls', shell=True, stdout=subprocess.PIPE)
-    print(statuswebhook.stdout)
-    return statuswebhook.stdout
+    client = docker.from_env()
+    print(client.containers.run("fw_webhook", ['python3', 'app/webhook.py'], network_mode='host'))
 
 
 # Function to pull webhook status from webhook server
@@ -243,9 +236,8 @@ def getMerakiSensors():
 
 # Function to start webhook server
 def engineio_start():
-    startengineio = subprocess.call('./startEngineIO.sh')
-    webhook_proccheck()
-    print('running engineio start function')
+    client = docker.from_env()
+    print(client.containers.run("fw_engineio", ['python3', 'app/engineio.py'], network_mode='host'))
 
 
 # Function to pull webhook status from webhook server

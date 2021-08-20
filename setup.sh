@@ -32,6 +32,9 @@ EOF
   id -nG  # Test if its part of one group
   # Docker Container Build
   docker build -tag fujiwara-api .
+  docker tag fujiwara-api:latest fw_mainapp:latest
+  docker tag fujiwara-api:latest fw_webhook:latest
+  docker tag fujiwara-api:latest fw_engineio:latest
   # Show all Docker Images
   docker images
 elif [ $ID == "centos" ]; then

@@ -5,17 +5,20 @@ services:
     build:
       context: .
     network_mode: host
-    image: fujiwara-api:latest
+    image: fw_mainapp:latest
     command: python3 app/app.py
     ports:
       - "5000:5000"
     volumes:
       - .:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    tty: true
+    stdin_open: true
   webhook_app:
     build:
       context: .
     network_mode: host
-    image: fujiwara-api:latest
+    image: fw_webhook:latest
     command: python3 app/webhook.py
     ports:
       - "5001:5001"
@@ -25,7 +28,7 @@ services:
     build:
       context: .
     network_mode: host
-    image: fujiwara-api:latest
+    image: fw_engineio:latest
     command: python3 app/engineio.py
     ports:
       - "5002:5002"
