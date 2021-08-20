@@ -8,5 +8,5 @@ if ps ax |grep -v grep | grep 'postgres' > /dev/null
     sudo /etc/init.d/postgresql start
 fi
 
-# Kickstart Main Flask App in Screen Instance
-python3 app.py
+# Kickstart Main Flask App in Docker
+docker-compose start main_app
