@@ -10,11 +10,12 @@ import os
 from pyngrok import ngrok, conf, exception
 import yaml
 import requests
-import subprocess
 import meraki
 import re
 import json
 import docker
+from pysnmp.hlapi import *
+
 
 
 # ------------------
@@ -45,6 +46,22 @@ def firstTimeDbSetup():
             conn.commit()
     else:  # Do initial DB File and Table setup
         return "Tables exist"
+
+
+# Grab Meraki SNMP String and store in DB (NEEDS FIXING, MY API KEY PLAYING UP)
+def GetMerakiSNMPString():
+    global MerakiAPIKey
+    global MerakiNetworkID
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    dashboard = meraki.DashboardAPI(MerakiAPIKey)
+    response = dashboard.networks.getNetworkSnmp(MerakiNetworkID)
+    SnmpTag = response['snmpvariablehere']
+    cur.execute(
+           "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiSNMP', %s , %s , '0')", [SnmpTag, MerakiNetworkID]
+    )
+    cur.close()
+    conn.commit()
 
 
 # ------------------
@@ -253,6 +270,7 @@ def engineio_status():
     return json_res
 
 
+# Function to pull all the latest Meraki Devices from webhook server and update
 def getNetworkDevices():
     global MerakiAPIKey
     global MerakiNetworkID
@@ -286,4 +304,23 @@ def getNetworkDevices():
     cur.close()
     conn.commit()
 
+
+# Poll the devices for status using sysDescr and return value
+def pollDevices(device_ip, snmpcomm):
+    iterator = getCmd(
+        SnmpEngine(),
+        CommunityData(snmpcomm, mpModel=0),
+        UdpTransportTarget((device_ip, 161)),
+        ContextData(),
+        ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysDescr', 0))
+    )
+    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+    if errorIndication:
+        print(errorIndication)
+    elif errorStatus:
+        print('%s at %s' % (errorStatus.prettyPrint(),
+                            errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
+    else:
+        for varBind in varBinds:
+            print(' = '.join([x.prettyPrint() for x in varBind]))
 

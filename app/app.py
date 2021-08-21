@@ -168,8 +168,12 @@ def firsttimenetworkid():
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
-        appsc.webhook_start()
-        appsc.engineio_start()
+        if request.form['submit_button'] == 'webhook_restart':
+            appsc.webhook_start()
+        elif request.form['submit_button'] == 'engineio_restart':
+            appsc.engineio_start()
+        else:
+            pass
     webhook_status = appsc.webhook_status()
     engineio_status = appsc.engineio_status()
     if webhook_status is None:

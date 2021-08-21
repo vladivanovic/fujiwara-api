@@ -10,7 +10,12 @@
 	<div id='FirstTimeForm'>
 	<form id="RestartNgrok" method="post">
 		<div class="form-group">
-			<button type="submit" class="btn btn-primary">Start/Restart Webhook + Engine.io</button>
+			<button type="submit" class="btn btn-primary" name="submit_button" value="webhook_restart">Start/Restart Webhook Container</button>
+		</div>
+	</form>
+	<form id="RestartEngineIO" method="post">
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary" name="submit_button" value="engineio_restart">Start/Restart Engine.io Container</button>
 		</div>
 	</form>
 	</div>
@@ -19,8 +24,12 @@
 	<table class="table">
 	<tr><th scope="col">Webhook Server Status</th></tr>
 	<tr><th scope="row">{{ webhook_status }}</th></tr>
+	<tr><th scope="col">Webhook Container Status</th></tr>
+	<tr><th scope="row">{{ webhook_container_status }}</th></tr>
 	<tr><th scope="col">Engine.IO Server Status</th></tr>
 	<tr><th scope="row">{{ engineio_status }}</th></tr>
+	<tr><th scope="col">Engine.IO Container Status</th></tr>
+	<tr><th scope="row">{{ engineio_container_status }}</th></tr>
 	</table>
 	</div>
 
