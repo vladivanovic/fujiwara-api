@@ -5,6 +5,16 @@ import time
 import datetime
 from dateutil import parser
 
+#Global declaration / prod code must retrieve from SQL DB
+dir = os.path.abspath(os.path.dirname(__file__))
+
+with open(os.path.join(dir, "sampleQueryBNEHQ.json")) as temp:
+    creds = temp.read()
+
+jCreds = json.loads(creds)
+
+APIKey = str(jCreds["APIKey"])
+netID = str(jCreds["networkId"])
 
 ## Function: retrieve MV snapshot URL
 def get_snapshot_url_mv_camera(mv_serial, timestamp_iso):
@@ -24,8 +34,14 @@ def get_snapshot_url_mv_camera(mv_serial, timestamp_iso):
     try:
         r_snapshoturl = requests.request('POST', f"https://api.meraki.com/api/v1/devices/{mv_serial}/camera/generateSnapshot", headers=headers, data=json.dumps(data))
         r_snapshoturl_json = r_snapshoturl.json()
-        print(f"Image URL found for: {mv_serial}")
-        return r_snapshoturl_json["url"]
+        
+        print(f"Snapped from: {mv_serial}")
+        # print (type(r_snapshoturl_json))
+        # return (r_snapshoturl_json["url"])
+        if "errors" in r_snapshoturl_json:
+            raise Exception('*cSnap* -- Snapshot retrieval failed')
+        else:
+            return (r_snapshoturl_json["url"])
     except Exception as e:
         return print(f"Error: {e}")
 
@@ -47,11 +63,10 @@ def get_snapshot_by_mt_door_event(mt20serial, mv_serial, num_entries, delta_seco
     r_envevents = requests.request('GET', f"https://api.meraki.com/api/v1/networks/{netID}/environmental/events", headers=headers, params=params)
     r_envevents_json = r_envevents.json()
 
-    #print (r_envevents_json)
-
+    
     for item in r_envevents_json:
         if item["eventData"]["value"] == "1.0":
-            print("Getting Snapshot")
+            print("Capturing image")
             time_plus_delta = parser.parse(item["occurredAt"]) + datetime.timedelta(0,delta_seconds) #delay in seconds
             
             new_ts_iso = datetime.datetime.isoformat(time_plus_delta)
@@ -68,42 +83,41 @@ def get_snapshot_by_mt_door_event(mt20serial, mv_serial, num_entries, delta_seco
             #wait at least 5 seconds before trying to download the image
             time.sleep(5) 
 
-            retries = 0
+            retries = 3
             success = False
             while success == False:
-                try:
-                    r_img = requests.get(snapshot_url)
-                    if r_img.status_code == 200:
-                        with open(f"images/{mv_serial}/{new_ts_unix}.jpeg", 'wb') as f:
-                            f.write(r_img.content)
-                        success = True
-                except Exception as e:
-                    retries += 1
-                    print(f"Error downloading image: {e}")
-                    print(f"Retry attempt: {retries}")
-                    time.sleep(30)
-                    if retries > 5:
-                        print("Error: max 5 retries")
-                        success = True
+                if snapshot_url is not None:
+                    try:
+                        r_img = requests.get(snapshot_url)
+                        if r_img.status_code == 200:
+                           with open(f"images/{mv_serial}/{new_ts_unix}.jpeg", 'wb') as f:
+                                f.write(r_img.content)
+                           print ("Snapshot download successful.\nFile:\'",new_ts_unix,".jpeg\' created")
+                           success = True
+                           return (snapshot_url)
+                        else:
+                           raise Exception('Image download failed')
+                        
+                    except Exception as e:
+                        retries -= 1
+                        print(f"Error: {e}")
+                        print(f"Retry attempt remaining: {retries}")
+                        time.sleep(5)
+                        if retries <= 0:
+                            print("Failed. Max attempts reached.")
+                            success = True
+                else:
+                    print ('Error: *cSnap* -- Image not found.')
+                    success = True
+
 
 
 ## execution main
 if __name__ == "__main__":
     ## retrieve data from database
-    ## Dev note: using hardcoded json for now
-    dir = os.path.abspath(os.path.dirname(__file__))
 
-    with open(os.path.join(dir, "sampleQueryBNEHQ.json")) as temp:
-        creds = temp.read()
-
-    jsonCreds = json.loads(creds)
-
-    APIKey = str(jsonCreds["APIKey"])
-    netID = str(jsonCreds["networkId"])
-    mt20serial = str(jsonCreds["serial"])
+    mt20serial = str(jCreds["serial"])
+    mv_serial = "xxxx-xxxx-xxxx"
     
-    # Dev Note: currently hardcoded. Either query via db or provide during function call
-    mv_serial = ""
-    
-    print("Sensor Triggered: Image capture processing...")
+    print("Capturing image")
     get_snapshot_by_mt_door_event(mt20serial, mv_serial, 3, 5) #mt20serial, mv_serial, num_entries, delta_seconds
