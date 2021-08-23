@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # All of the Imports
+import requests
 from flask import Flask, render_template, request, Response, jsonify, abort
 from pyngrok import ngrok
 import app_startchecks as appsc
@@ -39,10 +40,13 @@ def index():
 def listen():
     if request.method == "POST":
         alert = request.json
-        print(alert)
-        print(alert['sharedSecret'])
         if alert['sharedSecret'] == 'auto-ngrok':
-            return Response(status=200)
+            if alert['alertTypeId'] == 'sensor_alert':
+                payload = alert
+                response = requests.request('POST', 'http://localhost:5002/listen', data=payload)
+                print(response)
+            else:
+                return Response(status=200)
         else:
             abort(401)
     else:

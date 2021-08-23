@@ -48,22 +48,6 @@ def firstTimeDbSetup():
         return "Tables exist"
 
 
-# Grab Meraki SNMP String and store in DB (NEEDS FIXING, MY API KEY PLAYING UP)
-def GetMerakiSNMPString():
-    global MerakiAPIKey
-    global MerakiNetworkID
-    conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-    dashboard = meraki.DashboardAPI(MerakiAPIKey)
-    response = dashboard.networks.getNetworkSnmp(MerakiNetworkID)
-    SnmpTag = response['snmpvariablehere']
-    cur.execute(
-           "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiSNMP', %s , %s , '0')", [SnmpTag, MerakiNetworkID]
-    )
-    cur.close()
-    conn.commit()
-
-
 # ------------------
 # APP STARTUP CHECK FUNCTIONS
 # ------------------
@@ -111,6 +95,22 @@ def GetMerakiNetworkID():
         return NetworkID
     else:
         return None
+
+
+# Grab Meraki SNMP String and store in DB
+def GetMerakiSNMPString():
+    global MerakiAPIKey
+    global MerakiNetworkID
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    dashboard = meraki.DashboardAPI(MerakiAPIKey)
+    response = dashboard.networks.getNetworkSnmp(MerakiNetworkID)
+    snmpTag = response['communityString']
+    cur.execute(
+           "INSERT INTO globalparams (name, param, other, active) VALUES ('MerakiSNMP', %s , %s , '1')", [snmpTag, MerakiNetworkID]
+    )
+    cur.close()
+    conn.commit()
 
 
 # ------------------
