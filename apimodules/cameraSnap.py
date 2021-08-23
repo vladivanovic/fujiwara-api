@@ -92,7 +92,7 @@ def get_snapshot_by_mt_door_event(mt20serial, mv_serial, num_entries, delta_seco
                         if r_img.status_code == 200:
                            with open(f"images/{mv_serial}/{new_ts_unix}.jpeg", 'wb') as f:
                                 f.write(r_img.content)
-                           print ("Snapshot download successful.\nFile:\'",new_ts_unix,".jpeg\' created")
+                           print (f"Snapshot download successful.\nFile:\'{new_ts_unix}.jpeg\' created")
                            success = True
                            return (snapshot_url)
                         else:
