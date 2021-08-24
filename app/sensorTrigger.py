@@ -14,7 +14,8 @@ def webhook_rx(webhook_body):  # Receive json body from webhook
     ## Need to update data source for mv serial
     mv_serial = str(appsc.GetMerakiMVDevices()[0]['serial'])
 
-    retries = 5
+    time.sleep(60)
+    retries = 3
     success = False
     while success == False:
         try:
@@ -22,10 +23,10 @@ def webhook_rx(webhook_body):  # Receive json body from webhook
             if imgURL is None:
                 raise Exception('*sT* -- URL missing')                               
             else:
-                print (f"imgURL = {imgURL}")
-                print ("Image successfully captured and downloaded")
+                # print(f"imgURL = {imgURL}")
+                print("Image successfully captured and downloaded")
+                success = True
                 return 200
-                success = True                
         except Exception as e:
             retries -= 1
             print(f"Error: {e}")
@@ -33,8 +34,8 @@ def webhook_rx(webhook_body):  # Receive json body from webhook
             print(f"Retry attempt remaining: {retries}")
             if retries <= 0:
                 print("Error: max attempts reached")
-                return 404
                 success = True
+                return 404
 
 
 if __name__ == "__main__":
