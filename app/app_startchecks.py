@@ -247,6 +247,38 @@ def getMerakiSensors():
     return response
 
 
+def saveMerakiAlerts(alertdict):
+    print(alertdict)
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    for alert in alertdict:
+        organizationId = alert['organizationId']
+        networkId = alert['lng']
+        networkUrl = alert['name']
+        networkTags = alert['serial']
+        deviceSerial = alert['deviceSerial']
+        deviceMac = alert['deviceMac']
+        deviceName = alert['deviceName']
+        deviceUrl = alert['deviceUrl']
+        deviceTags = alert['deviceTags']
+        deviceModel = alert['deviceModel']
+        alertId = alert['alertId']
+        alertType = alert['alertType']
+        alertTypeId = alert['alertTypeId']
+        alertLevel = alert['alertLevel']
+        occurredAt = alert['occurredAt']
+        alertData = alert['alertData']
+        updatedevice = cur.execute(
+            """
+            INSERT INTO alerts (organizationId, networkId, networkUrl, networkTags, deviceSerial, deviceMac, deviceName, deviceUrl, deviceTags, deviceModel, alertId, alertType, alterTypeId, alertLevel, occurredAt, alertData)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            [organizationId, networkId, networkUrl, networkTags, deviceSerial, deviceMac, deviceName, deviceUrl, deviceTags, deviceModel, alertId, alertType, alertTypeId, alertLevel, occurredAt, alertData]
+        )
+    cur.close()
+    conn.commit()
+
+
 # ------------------
 # ENGINE.IO FUNCTIONS
 # ------------------
@@ -276,7 +308,7 @@ def getNetworkDevices():
     global MerakiNetworkID
     dashboard = meraki.DashboardAPI(MerakiAPIKey)
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
     getdevices = dashboard.networks.getNetworkDevices(MerakiNetworkID)
     for device in getdevices:
         lat = device['lat']
@@ -343,6 +375,7 @@ def GetMerakiMTDevices():
     for serial in mtSerial:
         mtSerialList.append(dict(serial))
     return mtSerialList
+
 
 # Get Meraki MV Devices
 def GetMerakiMVDevices():
