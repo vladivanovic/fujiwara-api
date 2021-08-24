@@ -2,6 +2,7 @@
 # All of the Imports
 from flask import Flask, render_template, request, Response, jsonify, abort
 import app_startchecks as appsc
+import sensorTrigger as sT
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
@@ -19,8 +20,13 @@ def index():
 # Create Webhook Listener
 @app.route('/listen', methods=['POST'])
 def listen():
-    print(request.json)
-    return Response(status=200)
+    reqbody = request.json
+    print(reqbody)
+    exec_code = sT.webhook_rx(reqbody)
+    if exec_code == 200:
+        return Response(status=200)
+    else:
+        return Response(status=404)
 
 
 # Secret Status Page
