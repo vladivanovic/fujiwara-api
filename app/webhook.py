@@ -45,7 +45,7 @@ def listen():
         if alert['sharedSecret'] == 'auto-ngrok':
             if alert['alertTypeId'] == 'sensor_alert':
                 payload = alert
-                response = requests.post('http://localhost:5002/listen', json=payload)
+                response = requests.post('http://localhost:5002/listen', json=payload, timeout=90)
                 print(response)
                 return Response(status=200)
             else:

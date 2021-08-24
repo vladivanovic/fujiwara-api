@@ -12,7 +12,7 @@ def webhook_rx(webhook_body):  # Receive json body from webhook
     mt20serial = webhook_body["deviceSerial"]
     
     ## Need to update data source for mv serial
-    mv_serial = appsc.GetMerakiMVDevices()[0]
+    mv_serial = str(appsc.GetMerakiMVDevices()[0]['serial'])
 
     retries = 5
     success = False

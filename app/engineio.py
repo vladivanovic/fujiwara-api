@@ -22,11 +22,7 @@ def listen():
     reqbody = request.json
     print(reqbody)
     exec_code = sT.webhook_rx(reqbody)
-    if exec_code == 200:
-        return Response(status=200)
-    else:
-        return Response(status=404)
-
+    return jsonify(status="Alert Received")
 
 # Secret Status Page
 @app.route('/status', methods=['GET'])
