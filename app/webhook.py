@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # All of the Imports
 import requests
-from flask import Flask, render_template, request, Response, jsonify, abort
+from flask import Flask, request, Response, jsonify, abort
 from pyngrok import ngrok
 import app_startchecks as appsc
 
@@ -25,6 +25,7 @@ else:
 # Get the Meraki Webhooks and Alerts updated to newest ngrok tunnel
 appsc.merakiWebhookSetup(ngrok_tunnel)
 
+
 # Default App Route and Webhook Status
 @app.route('/')
 def index():
@@ -40,11 +41,13 @@ def index():
 def listen():
     if request.method == "POST":
         alert = request.json
+        print(alert)
         if alert['sharedSecret'] == 'auto-ngrok':
             if alert['alertTypeId'] == 'sensor_alert':
                 payload = alert
-                response = requests.request('POST', 'http://localhost:5002/listen', data=payload)
+                response = requests.post('http://localhost:5002/listen', json=payload)
                 print(response)
+                return Response(status=200)
             else:
                 return Response(status=200)
         else:

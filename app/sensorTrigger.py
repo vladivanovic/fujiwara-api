@@ -3,16 +3,16 @@ import os
 import json
 import cameraSnap as cSnap
 import time
+import app_startchecks as appsc
 
 
 
-def webhook_rx(webhook_body): #receive json body from webhook
+def webhook_rx(webhook_body):  # Receive json body from webhook
     
     mt20serial = webhook_body["deviceSerial"]
     
     ## Need to update data source for mv serial
-    mv_serial = "xxxx-xxxx-xxxx"
-
+    mv_serial = appsc.GetMerakiMVDevices()[0]
 
     retries = 5
     success = False

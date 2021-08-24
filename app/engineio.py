@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 # All of the Imports
-from flask import Flask, render_template, request, Response, jsonify, abort
+from flask import Flask, request, Response, jsonify
 import app_startchecks as appsc
 import sensorTrigger as sT
-import psycopg2
 from psycopg2.extras import RealDictCursor
 
 # Kickstart Flask App
@@ -57,7 +56,7 @@ def devicepoll():
     print(snmpList)
     # SQL Query here for Devices + NetworkID
     cur.execute(
-        "SELECT model, lanip, networkid FROM devices")
+        "SELECT model, lanip, networkid FROM devices WHERE lanip IS NOT NULL")
     dbdevices = cur.fetchall()
     devicelist = []
     for row in dbdevices:
@@ -78,6 +77,7 @@ def devicepoll():
         appsc.pollDevices(device['lanip'], device['snmpKey'])
         # Eventually return the result to DB updating available or not
     return jsonify(status="Polling all Network Devices via SNMP")
+
 
 # Page to trigger updating SNMP and other variables
 @app.route('/networksnmp', methods=['GET'])

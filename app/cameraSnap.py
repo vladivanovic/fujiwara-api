@@ -4,17 +4,17 @@ import json
 import time
 import datetime
 from dateutil import parser
+import app_startchecks as appsc
 
-#Global declaration / prod code must retrieve from SQL DB
-dir = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(dir, "sampleQueryBNEHQ.json")) as temp:
-    creds = temp.read()
+# Database Connection
 
-jCreds = json.loads(creds)
+MerakiOrgID = appsc.GetMerakiOrgID()
+MerakiAPIKey = appsc.GetMerakiAPIKey()
+MerakiNetworkID = appsc.GetMerakiNetworkID()
 
-APIKey = str(jCreds["APIKey"])
-netID = str(jCreds["networkId"])
+APIKey = MerakiAPIKey
+netID = MerakiNetworkID
 
 ## Function: retrieve MV snapshot URL
 def get_snapshot_url_mv_camera(mv_serial, timestamp_iso):
@@ -116,8 +116,8 @@ def get_snapshot_by_mt_door_event(mt20serial, mv_serial, num_entries, delta_seco
 if __name__ == "__main__":
     ## retrieve data from database
 
-    mt20serial = str(jCreds["serial"])
-    mv_serial = "xxxx-xxxx-xxxx"
+    mt20serial = appsc.GetMerakiMTDevices()
+    mv_serial = appsc.GetMerakiMVDevices()
     
     print("Capturing image")
     get_snapshot_by_mt_door_event(mt20serial, mv_serial, 3, 5) #mt20serial, mv_serial, num_entries, delta_seconds

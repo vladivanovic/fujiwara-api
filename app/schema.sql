@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS devices (
     id SERIAL PRIMARY KEY,
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     devicename TEXT NOT NULL,
-    serial TEXT NOT NULL,
+    serial TEXT NOT NULL UNIQUE,
     macaddress TEXT NOT NULL,
     wirelessMac TEXT,
     model TEXT NOT NULL,

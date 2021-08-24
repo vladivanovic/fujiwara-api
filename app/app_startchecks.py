@@ -17,7 +17,6 @@ import docker
 from pysnmp.hlapi import *
 
 
-
 # ------------------
 # DB FUNCTIONS
 # ------------------
@@ -145,6 +144,7 @@ def startngroktunnel():
 MerakiOrgID = GetMerakiOrgID()
 MerakiAPIKey = GetMerakiAPIKey()
 MerakiNetworkID = GetMerakiNetworkID()
+
 
 # Function to start webhook server
 def webhook_start():
@@ -299,8 +299,13 @@ def getNetworkDevices():
             wanIp = None
         tags = device['tags']
         networkId = device['networkId']
-        updatedevice = cur.execute(  # This needs to be fixed from ON CONFLICT DO NOTHING to ON CONFLICT devicename SET every other value
-            "INSERT INTO devices (lat, long, devicename, serial, macaddress, wirelessMac, model, lanIp, wanIp, tags, networkId) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING", [lat, long, devicename, serial, macaddress, wirelessMac, model, lanIp, wanIp, tags, networkId])
+        updatedevice = cur.execute(
+            """
+            INSERT INTO devices (lat, long, devicename, serial, macaddress, wirelessMac, model, lanIp, wanIp, tags, networkId)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (serial) DO NOTHING
+            """,
+            [lat, long, devicename, serial, macaddress, wirelessMac, model, lanIp, wanIp, tags, networkId]
+        )
     cur.close()
     conn.commit()
 
@@ -324,3 +329,31 @@ def pollDevices(device_ip, snmpcomm):
         for varBind in varBinds:
             print(' = '.join([x.prettyPrint() for x in varBind]))
 
+
+# Get Meraki MT Devices
+def GetMerakiMTDevices():
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute(
+          "SELECT serial FROM devices WHERE model = 'MT20'"
+    )
+    mtSerial = cur.fetchall()
+    mtSerialList = []
+    cur.close()
+    for serial in mtSerial:
+        mtSerialList.append(dict(serial))
+    return mtSerialList
+
+# Get Meraki MV Devices
+def GetMerakiMVDevices():
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute(
+          "SELECT serial FROM devices WHERE model = 'MV12WE'"
+    )
+    mvSerial = cur.fetchall()
+    mvSerialList = []
+    cur.close()
+    for serial in mvSerial:
+        mvSerialList.append(dict(serial))
+    return mvSerialList
