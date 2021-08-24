@@ -47,8 +47,10 @@ def listen():
                 payload = alert
                 response = requests.post('http://localhost:5002/listen', json=payload, timeout=90)
                 print(response)
+                appsc.saveMerakiAlerts(alert)
                 return Response(status=200)
             else:
+                appsc.saveMerakiAlerts(alert)
                 return Response(status=200)
         else:
             abort(401)
