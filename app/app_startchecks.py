@@ -247,34 +247,28 @@ def getMerakiSensors():
     return response
 
 
-def saveMerakiAlerts(alertdict):
-    print(alertdict)
+def saveMerakiAlerts(alert):
     conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-    for alert in alertdict:
-        organizationId = alert['organizationId']
-        networkId = alert['lng']
-        networkUrl = alert['name']
-        networkTags = alert['serial']
-        deviceSerial = alert['deviceSerial']
-        deviceMac = alert['deviceMac']
-        deviceName = alert['deviceName']
-        deviceUrl = alert['deviceUrl']
-        deviceTags = alert['deviceTags']
-        deviceModel = alert['deviceModel']
-        alertId = alert['alertId']
-        alertType = alert['alertType']
-        alertTypeId = alert['alertTypeId']
-        alertLevel = alert['alertLevel']
-        occurredAt = alert['occurredAt']
-        alertData = alert['alertData']
-        updatedevice = cur.execute(
-            """
-            INSERT INTO alerts (organizationId, networkId, networkUrl, networkTags, deviceSerial, deviceMac, deviceName, deviceUrl, deviceTags, deviceModel, alertId, alertType, alterTypeId, alertLevel, occurredAt, alertData)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """,
-            [organizationId, networkId, networkUrl, networkTags, deviceSerial, deviceMac, deviceName, deviceUrl, deviceTags, deviceModel, alertId, alertType, alertTypeId, alertLevel, occurredAt, alertData]
-        )
+    cur = conn.cursor()
+    organizationId = alert['organizationId']
+    networkId = alert['networkId']
+    networkUrl = alert['networkUrl']
+    networkTags = alert['networkTags']
+    deviceSerial = alert['deviceSerial']
+    deviceMac = alert['deviceMac']
+    deviceName = alert['deviceName']
+    deviceUrl = alert['deviceUrl']
+    deviceTags = alert['deviceTags']
+    deviceModel = alert['deviceModel']
+    alertId = alert['alertId']
+    alertType = alert['alertType']
+    alertTypeId = alert['alertTypeId']
+    alertLevel = alert['alertLevel']
+    occurredAt = alert['occurredAt']
+    alertData = str(alert['alertData'])
+    updatedevice = cur.execute(
+        "INSERT INTO alerts (organizationId, networkId, networkUrl, networkTags, deviceSerial, deviceMac, deviceName, deviceUrl, deviceTags, deviceModel, alertId, alertType, alertTypeId, alertLevel, occurredAt, alertData) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [organizationId, networkId, networkUrl, networkTags, deviceSerial, deviceMac, deviceName, deviceUrl, deviceTags, deviceModel, alertId, alertType, alertTypeId, alertLevel, occurredAt, alertData]
+    )
     cur.close()
     conn.commit()
 

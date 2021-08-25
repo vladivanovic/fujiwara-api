@@ -21,6 +21,8 @@ if ngrok_tunnels is not None:
         ngrok_tunnel.append(tunnels)
 else:
     ngrok_tunnel = None
+print(ngrok_tunnel)
+
 
 # Get the Meraki Webhooks and Alerts updated to newest ngrok tunnel
 appsc.merakiWebhookSetup(ngrok_tunnel)
@@ -41,6 +43,7 @@ def index():
 def listen():
     if request.method == "POST":
         alert = request.json
+        print("This is at the start of the POST")
         print(alert)
         if alert['sharedSecret'] == 'auto-ngrok':
             if alert['alertTypeId'] == 'sensor_alert':

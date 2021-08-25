@@ -9,6 +9,7 @@ This project is built on the latest (August 2021) versions of the following:
 - Meraki Dashboard APIs
 - ngrok (sign up for free to get an AuthToken at ngrok.com)
 - Pyngrok
+- PySNMP
 - Docker
 - Ubuntu (eventually CentOS too)
 
@@ -23,26 +24,26 @@ What this project gives you:
 
 ## to-do-list
 
-Feature 1 (Vlad)
+Feature 1 ()
 --- Docker ---
-1. Troubleshoot Docker SDK when main app is running in a container itself, there's a trick to be done that I'm troubleshooting through
-
 Tasks:
-1. need to add extra buttons in the admin panel to start one service at a time, restart services
-2. use docker sdk to show the status of the container itself, not just the flask service on there
+1. Troubleshoot Docker SDK when main app is running in a container itself, there's a trick to be done that I'm troubleshooting through
+2use docker sdk to show the status of the container itself, not just the flask service on there
 
 
 Feature 2 (Vlad)
 --- Main App ---
-1. Find Python SNMP Module, install it and add to automated installer
-2. Build out ability for Python SNMP Module, pulling data and temp storing in SQLite3 DB
-3. Test APIs for WAN links, Device Status
+1. Build out ability for Python SNMP Module, pulling data and temp storing in SQLite3 DB
+2. Test APIs for WAN links, Device Status (if any)
+3. Build GUI
 
 Feature 3 (Fred)
-1. To support the Sensor API w/ MV camera feature - need to build out a DB to create a mapping between system and camera?? or see if there is device location in the API then we can say any sensor in area X triggers a snapshot on one or multiple cameras in the same area (although differentiating between say what is in a DC and what is outside of a DC is hard so...)
-2. . Get Beta MT sensor API, test with MV sensor Snapshot API
+1. Use webhooks to get real time temp/humidity readings and update on the HUD page (instead of SNMP polling)
+2. Meraki MV Area takes snapshot required?
+3. Water module?
 
 ## random idea list
 
 Something to be added here one day
-1. Find out if we can use webhooks to get real time temp/humidity readings and update on the HUD page (instead of SNMP polling)
+1. Integrate alerting to Webex Teams Bot
+2. Create ElasticLogstashKibana and pre-create dashboards for syslog, netflow and containerize

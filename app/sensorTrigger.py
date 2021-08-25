@@ -14,7 +14,7 @@ def webhook_rx(webhook_body):  # Receive json body from webhook
     ## Need to update data source for mv serial
     mv_serial = str(appsc.GetMerakiMVDevices()[0]['serial'])
 
-    time.sleep(60)
+    time.sleep(45)
     retries = 3
     success = False
     while success == False:

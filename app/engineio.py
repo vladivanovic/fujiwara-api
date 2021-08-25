@@ -4,6 +4,8 @@ from flask import Flask, request, Response, jsonify
 import app_startchecks as appsc
 import sensorTrigger as sT
 from psycopg2.extras import RealDictCursor
+from threading import Thread
+
 
 # Kickstart Flask App
 app = Flask(__name__)
@@ -21,7 +23,10 @@ def index():
 def listen():
     reqbody = request.json
     print(reqbody)
-    exec_code = sT.webhook_rx(reqbody)
+    if reqbody['alertData']['triggerData'][0]['trigger']['sensorValue'] == 1.0:
+        Thread(target=sT.webhook_rx, args=(reqbody, )).start()
+    else:
+        pass
     return jsonify(status="Alert Received")
 
 # Secret Status Page
