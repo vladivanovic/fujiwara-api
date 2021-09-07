@@ -348,12 +348,29 @@ def pollDevices(device_ip, snmpcomm):
     errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
     if errorIndication:
         print(errorIndication)
+        return False
     elif errorStatus:
         print('%s at %s' % (errorStatus.prettyPrint(),
                             errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
+        return False
     else:
         for varBind in varBinds:
             print(' = '.join([x.prettyPrint() for x in varBind]))
+        return True
+
+
+# Update DB on SNMP Poll
+def updateDBwithSNMP(deviceip):
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    updatedevice = cur.execute(
+        """
+        UPDATE devices SET status = 1 WHERE lanIp = %s
+        """,
+        [deviceip]
+    )
+    cur.close()
+    conn.commit()
 
 
 # Get Meraki MT Devices

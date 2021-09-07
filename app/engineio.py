@@ -75,8 +75,9 @@ def devicepoll():
     cur.close()
     # Trigger the Device Poll
     for device in devicelist:
-        appsc.pollDevices(device['lanip'], device['snmpKey'])
-        # Eventually return the result to DB updating available or not
+        poll = appsc.pollDevices(device['lanip'], device['snmpKey'])
+        if poll:
+            appsc.updateDBwithSNMP(device['lanip'])
     return jsonify(status="Polling all Network Devices via SNMP")
 
 
