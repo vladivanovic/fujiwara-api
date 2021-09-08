@@ -30,14 +30,7 @@ Tasks:
 1. Troubleshoot Docker SDK when main app is running in a container itself, there's a trick to be done that I'm troubleshooting through
 2use docker sdk to show the status of the container itself, not just the flask service on there
 
-
-Feature 2 (Vlad)
---- Main App ---
-1. Build out ability for Python SNMP Module, pulling data and temp storing in SQLite3 DB
-2. Test APIs for WAN links, Device Status (if any)
-3. Build GUI
-
-Feature 3 (Fred)
+Feature 2 (Fred)
 1. Use webhooks to get real time temp/humidity readings and update on the HUD page (instead of SNMP polling)
 2. Meraki MV Area takes snapshot required?
 3. Water module?
@@ -47,3 +40,5 @@ Feature 3 (Fred)
 Something to be added here one day
 1. Integrate alerting to Webex Teams Bot
 2. Create ElasticLogstashKibana and pre-create dashboards for syslog, netflow and containerize
+3. Convert Main App to use AJAX for dynamic page loading of newest alerts/device status
+4. Automate the engagement of engineio.py's /device and /devicepoll to update device list in the DB and SNMP polls to update devicestatus in the DB
