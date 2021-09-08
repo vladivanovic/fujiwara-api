@@ -42,3 +42,4 @@ Something to be added here one day
 2. Create ElasticLogstashKibana and pre-create dashboards for syslog, netflow and containerize
 3. Convert Main App to use AJAX for dynamic page loading of newest alerts/device status
 4. Automate the engagement of engineio.py's /device and /devicepoll to update device list in the DB and SNMP polls to update devicestatus in the DB
+5. Per device create a table to collect SNMP Performance statistics (need a smart way to do this)
