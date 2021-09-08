@@ -183,6 +183,28 @@ def admin():
     return render_template('admin.html', webhook_status=webhook_status, engineio_status=engineio_status)
 
 
+@app.route('/livestatus', methods=['GET'])
+def livestatus():
+    conn = appsc.get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute(
+        "SELECT devicename, model, serial, lanip, status FROM devices WHERE status IS NOT NULL")
+    merakidevices = cur.fetchall()
+    merakidevicelist = []
+    for row in merakidevices:
+        merakidevicelist.append(dict(row))
+    cur.execute(
+        "SELECT alertid, alerttype, alerttypeid, alertlevel, occurredat, alertdata, devicename, devicemodel FROM alerts")
+    merakialerts = cur.fetchall()
+    merakialertslist = []
+    for row in merakialerts:
+        merakialertslist.append(dict(row))
+    cur.close()
+    print(merakidevicelist)
+    print(merakialertslist)
+    return render_template('livestatus.html', devicelist=merakidevicelist, alertlist=merakialertslist)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 

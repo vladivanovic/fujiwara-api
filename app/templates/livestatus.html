@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} Fujiwara-API - Admin Page {% endblock %}
+
+{% block content %}
+
+	<h1>Fujiwara-API - Status Page</h1>
+
+	<div id='ListResults'>
+	<table class="table">
+	<tr>
+		<th scope="col">Device Name</th>
+		<th scope="col">Device Model</th>
+		<th scope="col">Serial Number</th>
+		<th scope="col">LAN IP</th>
+		<th scope="col">Device Status</th>
+	</tr>
+	{% for device in devicelist %}
+	<tr>
+		<th scope="row">{{ device.devicename }}</th>
+		<th scope="row">{{ device.model }}</th>
+		<th scope="row">{{ device.serial }}</th>
+		<th scope="row">{{ device.lanip }}</th>
+		<th scope="row">{{ device.status }}</th>
+	</tr>
+	{% endfor %}
+	</table>
+	<table class="table">
+	<tr>
+		<th scope="col">Alert ID</th>
+		<th scope="col">Alert Type</th>
+		<th scope="col">Alert Level</th>
+		<th scope="col">Alert Data</th>
+		<th scope="col">Occurred At</th>
+		<th scope="col">Device Name</th>
+		<th scope="col">Device Model</th>
+	</tr>
+	{% for alert in alertlist %}
+	<tr>
+		<th scope="row">{{ alert.alertid}}</th>
+		<th scope="row">{{ alert.alerttype }}</th>
+		<th scope="row">{{ alert.alertlevel }}</th>
+		<th scope="row">{{ alert.alertdata }}</th>
+		<th scope="row">{{ alert.occurredat }}</th>
+		<th scope="row">{{ alert.devicename }}</th>
+		<th scope="row">{{ alert.devicemodel }}</th>
+	</tr>
+	{% endfor %}
+	</table>
+	</div>
+
+{% endblock %}
