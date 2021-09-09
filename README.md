@@ -43,7 +43,7 @@ Feature 1 ()
 --- Docker ---
 Tasks:
 1. Troubleshoot Docker SDK when main app is running in a container itself, there's a trick to be done that I'm troubleshooting through
-2use docker sdk to show the status of the container itself, not just the flask service on there
+2. use docker sdk to show the status of the container itself, not just the flask service on there
 
 Feature 2 (Fred)
 1. Use webhooks to get real time temp/humidity readings and update on the HUD page (instead of SNMP polling)
@@ -58,3 +58,4 @@ Something to be added here one day
 3. Convert Main App to use AJAX for dynamic page loading of newest alerts/device status
 4. Automate the engagement of engineio.py's /device and /devicepoll to update device list in the DB and SNMP polls to update devicestatus in the DB
 5. Per device create a table to collect SNMP Performance statistics (need a smart way to do this)
+6. Modularize the code in app_startchecks to allow for easier container build/runs on sub-functions
