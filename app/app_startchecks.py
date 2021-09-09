@@ -160,9 +160,10 @@ def webhook_status():
         json_res = None
         print("Webhook Error")
         return json_res
-    json_res = webhook_status_response.json()
-    print(json_res)
-    return json_res
+    json_res = json.loads(webhook_status_response.text)
+    res_body = str(json_res['status'] + " -- " + str(json_res['tunnel_data'][0]))
+    print (res_body)
+    return res_body
 
 
 # Function to setup the webhook server, update Meraki Dashboard automatically
@@ -291,9 +292,12 @@ def engineio_status():
         json_res = None
         print("Engine.IO Error")
         return json_res
-    json_res = engineio_status_response.json()
-    print(json_res)
-    return json_res
+    json_res = json.dumps(engineio_status_response.status_code)
+    if json_res == '200':
+        res_body = "Engine.IO is Running"
+    else:
+        res_body = null
+    return res_body
 
 
 # Function to pull all the latest Meraki Devices from webhook server and update

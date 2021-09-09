@@ -175,9 +175,9 @@ def admin():
         else:
             pass
     webhook_status = appsc.webhook_status()
-    engineio_status = appsc.engineio_status()
     if webhook_status is None:
         webhook_status = 'Webhook not up'
+    engineio_status = appsc.engineio_status()
     if engineio_status is None:
         engineio_status = 'Engine.IO is not up'
     return render_template('admin.html', webhook_status=webhook_status, engineio_status=engineio_status)
