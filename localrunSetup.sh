@@ -48,6 +48,9 @@ elif [ $ID == "centos" ]; then
 	createdb merakihuddb;
 	psql -c "CREATE USER merakihud WITH PASSWORD 'merakihudpassword';"
 	psql -c "GRANT ALL PRIVILEGES ON DATABASE merakihuddb TO merakihud;"
+	psql -c "\c merakihuddb;"
+	psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to merakihud;"
+	psql -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public to merakihud;"
 EOF
 else
 	echo $ID

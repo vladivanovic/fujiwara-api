@@ -9,4 +9,4 @@ if ps ax |grep -v grep | grep 'postgres' > /dev/null
 fi
 
 # Kickstart Main Flask App in Docker
-docker-compose start main_app
+docker-compose up main_app

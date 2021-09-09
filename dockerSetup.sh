@@ -18,6 +18,9 @@ if [ $ID == "ubuntu" ]; then
 	createdb merakihuddb;
 	psql -c "CREATE USER merakihud WITH PASSWORD 'merakihudpassword';"
 	psql -c "GRANT ALL PRIVILEGES ON DATABASE merakihuddb TO merakihud;"
+	psql -c "\c merakihuddb;"
+	psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to merakihud;"
+	psql -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public to merakihud;"
 EOF
   # Docker Installation
   sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
@@ -31,7 +34,7 @@ EOF
   su - ${USER}  # Become that user
   id -nG  # Test if its part of one group
   # Docker Container Build
-  docker build -tag fujiwara-api .
+  docker build -t fujiwara-api .
   docker tag fujiwara-api:latest fw_mainapp:latest
   docker tag fujiwara-api:latest fw_webhook:latest
   docker tag fujiwara-api:latest fw_engineio:latest
