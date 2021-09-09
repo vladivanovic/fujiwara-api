@@ -1,3 +1,5 @@
+[![python3](https://img.shields.io/badge/python-3.7+-blue.svg)](https://github.com/vladivanovic/fujiwara-api/)
+
 # fujiwara-api
 
 A Meraki HUD (so you don't need to open Dashboard)
