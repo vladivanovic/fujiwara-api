@@ -22,6 +22,19 @@ What this project gives you:
 3. A HUD to see events related to your sensors + cameras, we take snapshots when a sensor triggers
 4. Run it all from Docker (eventually)
 
+## how to install and run
+
+1. Clone this Github Repository on to any Ubuntu 20.04 LTS installation
+2. Depending on your desired runtime method, run either localrunSetup.sh or dockerSetup.sh (will prompt for sudo)
+3. Depending on your desired runtime method, run either startLocalrunApp.sh or startDockerApp.sh
+4. Open your browser and navigate to http://localhost:5000/ and complete the initial setup and take a look at the caution points below
+
+** Caution **
+Docker is still under construction in our project as of September 9th and may not 100% work
+
+** Caution 2 **
+When running locally, please utilise tmux or screen or then run 'python3 app/webhook.py' and 'python3 app/engineio.py' after you have completed the initial setup in step 4 above
+
 ## to-do-list
 
 Feature 1 ()
