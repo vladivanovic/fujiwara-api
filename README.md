@@ -37,7 +37,10 @@ What this project gives you:
 ```
 
 3. Open your browser and navigate to http://localhost:5000/ to complete the initial setup
-**Image to follow**
+![First Time Setup](https://user-images.githubusercontent.com/45674865/132804090-1dd735dc-9cdf-4702-89b4-f2fd9b3938f5.png)
+![Org ID First Time](https://user-images.githubusercontent.com/45674865/132804132-e0688912-12b7-4125-bec2-c64b772a2a0e.png)
+
+
 
 ** Caution **
 Docker is still under construction in our project as of September 9th and may not 100% work
