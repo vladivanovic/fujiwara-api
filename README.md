@@ -39,7 +39,8 @@ What this project gives you:
 3. Open your browser and navigate to http://localhost:5000/ to complete the initial setup
 ![FirstTimeSetup](https://user-images.githubusercontent.com/45674865/132804963-696c492c-a8b5-4ace-acd0-2ed1416794e0.png)
 
-![OrgID_FirstTime](https://user-images.githubusercontent.com/45674865/132804132-e0688912-12b7-4125-bec2-c64b772a2a0e.png)
+![OrgID_FirstTime](https://user-images.githubusercontent.com/45674865/132805088-7fb21a77-bdbe-4dbe-9798-232f77da2cf7.png)
+
 
 4. Trigger a device collection process to populate the HUD device list
 ![Device_Collection](https://user-images.githubusercontent.com/45674865/132804977-f0e6b71b-ce32-46ce-b1a6-a3a4eb5af3a5.png)
