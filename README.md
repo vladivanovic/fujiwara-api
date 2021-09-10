@@ -27,9 +27,16 @@ What this project gives you:
 ## Install and Setup
 
 1. Clone this Github Repository on to any Ubuntu 20.04 LTS installation
-2. Depending on your desired runtime method, run either localrunSetup.sh or dockerSetup.sh (will prompt for sudo)
-3. Depending on your desired runtime method, run either startLocalrunApp.sh or startDockerApp.sh
-4. Open your browser and navigate to http://localhost:5000/ and complete the initial setup and take a look at the caution points below
+```
+git clone https://github.com/vladivanovic/fujiwara-api.git
+```
+
+2. Run localrunSetup.sh (will prompt for sudo)
+```
+$./localrunSetup.sh
+```
+
+3. Open your browser and navigate to http://localhost:5000/ and complete the initial setup and take a look at the caution points below
 
 ** Caution **
 Docker is still under construction in our project as of September 9th and may not 100% work
