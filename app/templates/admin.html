@@ -33,4 +33,17 @@
 	</table>
 	</div>
 
+	<div id = 'Manual Triggers'>
+	<form id="Refresh Inventory" method="post">
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary" name="submit_button" value="inventory_collection">Trigger Inventory Collection</button>
+		</div>
+	</form>
+	<form id="Manual Trigger SNMP" method="post">
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary" name="submit_button" value="inventory_collection">Trigger SNMP Polling</button>
+		</div>
+	</form>
+	</div>
+
 {% endblock %}

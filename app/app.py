@@ -172,6 +172,10 @@ def admin():
             appsc.webhook_start()
         elif request.form['submit_button'] == 'engineio_restart':
             appsc.engineio_start()
+        elif request.form['submit_button'] == 'inventory_collection':
+            appsc.getNetworkDevices()
+        elif request.form['submit_button'] == 'snmp_poll':
+            appsc.pollDevices(device_ip, snmpcomm)  #need input?
         else:
             pass
     webhook_status = appsc.webhook_status()
