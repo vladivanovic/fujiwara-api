@@ -2,18 +2,18 @@
 
 # fujiwara-api
 
-A Meraki HUD (so you don't need to open Dashboard)
+A Meraki HUD (heads-up display, so you don't need to open Dashboard)
 
 This project is built on the latest (August 2021) versions of the following:
 - Python3
 - Flask
 - PostgreSQL
 - Meraki Dashboard APIs
-- ngrok (sign up for free to get an AuthToken at ngrok.com)
+- ngrok (Required: AuthToken from ngrok.com)
 - Pyngrok
 - PySNMP
 - Docker
-- Ubuntu (eventually CentOS too)
+- Ubuntu (on roadmap: CentOS support)
 
 What this project gives you:
 1. Automated install of all requirements for this Project (on Ubuntu or CentOS)
@@ -22,9 +22,9 @@ What this project gives you:
     b. Device Status (with name + IP)
     c. Advanced details using SNMP
 3. A HUD to see events related to your sensors + cameras, we take snapshots when a sensor triggers
-4. Run it all from Docker (eventually)
+4. Container based run time (future)
 
-## how to install and run
+## Install and Setup
 
 1. Clone this Github Repository on to any Ubuntu 20.04 LTS installation
 2. Depending on your desired runtime method, run either localrunSetup.sh or dockerSetup.sh (will prompt for sudo)
@@ -45,10 +45,10 @@ Tasks:
 1. Troubleshoot Docker SDK when main app is running in a container itself, there's a trick to be done that I'm troubleshooting through
 2. use docker sdk to show the status of the container itself, not just the flask service on there
 
-Feature 2 (Fred)
+Feature 2 (pxs)
 1. Use webhooks to get real time temp/humidity readings and update on the HUD page (instead of SNMP polling)
-2. Meraki MV Area takes snapshot required?
-3. Water module?
+2. MV-MT Snapshot to support multiple cameras for different angles
+3. Water leak sensor support (future)
 
 ## random idea list
 
