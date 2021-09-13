@@ -64,6 +64,7 @@ Feature 2 (pxs)
 1. Use webhooks to get real time temp/humidity readings and update on the HUD page (instead of SNMP polling)
 2. MV-MT Snapshot to support multiple cameras for different angles
 3. Water leak sensor support (future)
+4. Investigate the webhook script and fix issue of pre-existing alert profiles going missing.
 
 ## random idea list
 
